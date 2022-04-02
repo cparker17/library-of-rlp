@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Edit Customer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+          crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div th:replace="fragments :: navigation"/>
+<div align="center"><br><br>
+    <h3>Update Information</h3>
+    <br />
+    <form action="#" th:action="@{/update}" th:object="${user}"
+          method="post">
+        <table border="0" cellpadding="10">
+            <tr>
+                <td>User ID:</td>
+                <td><input type="text" th:field="*{id}" readonly/></td>
+            </tr>
+            <tr>
+                <td>First Name:</td>
+                <td><input type="text" th:field="*{firstName}" required/></td>
+            </tr>
+            <tr>
+                <td>Last Name:</td>
+                <td><input type="text" th:field="*{lastName}" required/></td>
+            </tr>
+            <tr>
+                <td>Street Address:</td>
+                <td><input type="text" th:field="*{address.streetAddress}" required/></td>
+            </tr>
+            <tr>
+                <td>City:</td>
+                <td><input type="text" th:field="*{address.city}" required/></td>
+            </tr>
+            <tr>
+                <td>State:</td>
+                <td><input type="text" th:field="*{address.state}" required/></td>
+            </tr>
+            <tr>
+                <td>Zip Code:</td>
+                <td><input type="text" th:field="*{address.zip}" required/></td>
+            </tr>
+            <tr>
+                <td>Email Address:</td>
+                <td><input type="email" th:field="*{email}" required/></td>
+            </tr>
+            <Center><tr>
+                <td colspan="2"><button type="submit" class="btn btn-light text-dark border-dark">Save</button></td>
+            </tr></Center>
+        </table>
+    </form>
+</div>
+</body>
+</html>
