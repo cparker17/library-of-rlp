@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.parker.rlp.models.Role.Roles.ROLE_ADMIN;
 import static com.parker.rlp.models.Role.Roles.ROLE_USER;
@@ -78,6 +79,7 @@ public class RlpApplication {
 							"rlp/src/main/resources/static/bookData.xlsx"));
 					XSSFWorkbook workbook = new XSSFWorkbook(file);
 					XSSFSheet sheet = workbook.getSheetAt(0);
+					List<Book> booksToPersist = new ArrayList<>();
 					ArrayList<String> rowData;
 					for (Row row : sheet) {
 						rowData = new ArrayList<>();
@@ -94,8 +96,9 @@ public class RlpApplication {
 								.imageFile(rowData.get(7))
 								.dateAdded(LocalDate.now())
 								.build();
-						bookRepository.save(book);
+						booksToPersist.add(book);
 					}
+					bookRepository.saveAll(booksToPersist);
 					file.close();
 				} catch (Exception e) {
 					e.printStackTrace();

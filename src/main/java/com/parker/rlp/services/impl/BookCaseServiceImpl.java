@@ -32,14 +32,16 @@ public class BookCaseServiceImpl implements BookCaseService {
 
     @Override
     public void addBookCase(BookCase bookCase) {
+        List<BookShelf> shelvesToPersist = new ArrayList<>();
         for (int i = 0; i < bookCase.getNumberOfUpperShelves(); i++) {
             BookShelf upperShelf = new BookShelf();
             upperShelf.setShelfLocation(i + 1);
             upperShelf.setShelfWidth(bookCase.getBookCaseWidth());
             upperShelf.setOpenSpaceWidth(bookCase.getBookCaseWidth() * bookCase.getAvailableSpace() / 100);
-            bookShelfRepository.save(upperShelf);
+            shelvesToPersist.add(upperShelf);
             bookCase.addShelfToBookCase(upperShelf);
         }
+        bookShelfRepository.saveAll(shelvesToPersist);
 
         BookShelf bottomShelf = new BookShelf();
         bottomShelf.setShelfLocation(bookCase.getNumberOfUpperShelves() + 1);
@@ -85,8 +87,7 @@ public class BookCaseServiceImpl implements BookCaseService {
 
         for (Book book : allBooks) {
             if (book.getHeight() > 300 || book.getDepth() > 300) {
-                bottomShelf.addBookToBookShelf(book);
-                bottomShelf.updateOpenSpaceWidth(book.getThickness());
+                bottomShelf.addBookToBookShelf(book, book.getThickness());
                 setBookLocation(bookCount++, book, bottomShelf, bookCase);
                 continue;
             }
@@ -107,9 +108,8 @@ public class BookCaseServiceImpl implements BookCaseService {
                     }
                 }
             }
-            bookShelf.addBookToBookShelf(book);
+            bookShelf.addBookToBookShelf(book, book.getThickness());
             setBookLocation(bookCount++, book, bookShelf, bookCase);
-            bookShelf.updateOpenSpaceWidth(book.getThickness());
         }
 
         bookRepository.saveAll(allBooks);
@@ -156,6 +156,7 @@ public class BookCaseServiceImpl implements BookCaseService {
                 for (Book book : bookShelf.getBooks()) {
                     if (book.getSubject().equals(newBook.getSubject())) {
                         containsSubject = true;
+                        break;
                     }
                 }
                 if (containsSubject) {
@@ -171,11 +172,9 @@ public class BookCaseServiceImpl implements BookCaseService {
         for (BookShelf bookShelf : bookShelvesWithSubject) {
             List<Book> books = bookShelf.getBooks();
             for (Book book : books) {
-                if (book.getTitle().compareToIgnoreCase(newBook.getTitle()) > 0) {
-                    if (book.getBookNumber() == books.size()) {
-                    } else {
-                        return bookShelf;
-                    }
+                if (book.getTitle().compareToIgnoreCase(newBook.getTitle()) > 0 &&
+                        book.getBookNumber() != books.size()) {
+                    return bookShelf;
                 }
             }
         }
@@ -184,8 +183,7 @@ public class BookCaseServiceImpl implements BookCaseService {
 
     private void addBook(Book newBook, BookShelf bookShelf, BookCase bookCase) {
         if (bookShelf.getOpenSpaceWidth() > newBook.getThickness()) {
-            bookShelf.addBookToBookShelf(newBook);
-            bookShelf.updateOpenSpaceWidth(newBook.getThickness());
+            bookShelf.addBookToBookShelf(newBook, newBook.getThickness());
         } else {
             BookShelf openBookShelf = getPreviousOpenShelf(bookShelf, newBook);
             if (openBookShelf != null) {
@@ -200,6 +198,10 @@ public class BookCaseServiceImpl implements BookCaseService {
             }
         }
 
+        getBookPositionAndSetLocation(newBook, bookShelf, bookCase);
+    }
+
+    private void getBookPositionAndSetLocation(Book newBook, BookShelf bookShelf, BookCase bookCase) {
         bookShelf.getBooks().sort(Comparator.comparing(Book::getSubject).thenComparing(Book::getTitle));
         bookShelfRepository.save(bookShelf);
         bookCaseRepository.save(bookCase);
@@ -208,6 +210,7 @@ public class BookCaseServiceImpl implements BookCaseService {
         for (Book book : bookShelf.getBooks()) {
             if (book.getTitle().equals(newBook.getTitle())) {
                 setBookLocation(count, newBook, bookShelf, bookCase);
+                break;
             }
             count++;
         }
