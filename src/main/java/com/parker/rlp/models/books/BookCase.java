@@ -23,6 +23,10 @@ public class BookCase {
     private BookShelf bottomShelf;
 
     private Double bookCaseWidth;
+    private Double maxBookHeight;
+    private Double maxBookDepth;
+
+    private boolean hasBottomShelf;
 
     private Integer numberOfUpperShelves;
 
@@ -33,5 +37,9 @@ public class BookCase {
             upperShelves = new ArrayList<>();
         }
         upperShelves.add(bookShelf);
+    }
+
+    public boolean hasBottomShelf () {
+        return hasBottomShelf;
     }
 }

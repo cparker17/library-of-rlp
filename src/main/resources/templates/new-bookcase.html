@@ -31,11 +31,35 @@
                 </td>
             </tr>
             <tr>
+                <td>Max Book Height:</td>
+                <td><input type="number" th:field="*{maxBookHeight}"/>
+                    <span class="validationError text-danger" th:if="${#fields.hasErrors('maxBookHeight')}"
+                          th:errors="*{maxBookHeight}">Max Book Height Error</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Max Book Depth:</td>
+                <td><input type="number" th:field="*{maxBookDepth}"/>
+                    <span class="validationError text-danger" th:if="${#fields.hasErrors('maxBookDepth')}"
+                          th:errors="*{maxBookDepth}">Max Book Depth Error</span>
+                </td>
+            </tr>
+            <tr>
                 <td>Available Width %:</td>
                 <td><input type="number" th:field="*{availableSpace}"/>
                     <span class="validationError text-danger" th:if="${#fields.hasErrors('availableSpace')}"
                           th:errors="*{availableSpace}">Shelf Width Error</span>
                 </td>
+            </tr>
+            <tr>
+                <td>Has bottom shelf:</td>
+                <td>
+                    <div class="col-lg-6" th:object="${bookcase}">
+                        <select class="form-select" aria-label="source" th:field="*{hasBottomShelf}">
+                            <option th:value="true">Yes</option>
+                            <option th:value="false">No</option>
+                        </select>
+                    </div>
             </tr>
             <tr>
                 <td colspan="2">

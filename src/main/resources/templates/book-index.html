@@ -29,8 +29,8 @@
                     <th>Title</th>
                     <th>Author</th>
                     <th>Actions</th>
-<!--                    <th sec:authorize="hasRole('ROLE_ADMIN')">Actions</th>-->
-<!--                    <th sec:authorize="hasRole('ROLE_ADMIN')">Actions</th>-->
+                    <!--                    <th sec:authorize="hasRole('ROLE_ADMIN')">Actions</th>-->
+                    <!--                    <th sec:authorize="hasRole('ROLE_ADMIN')">Actions</th>-->
                 </tr>
                 </thead>
                 <tbody>
@@ -60,30 +60,32 @@
                         </div>
                     </tr>
                 </div>
-                <tr th:each="book : ${bookCase.bottomShelf.books}">
-                    <td th:text="${bookCase.bottomShelf.shelfLocation}">Shelf#</td>
-                    <td th:text="${book.subject}">Subject</td>
-                    <td th:text="${book.title}">Title</td>
-                    <td th:text="${book.author}">Author</td>
-                    <td><a th:href="@{'/books/cover-image/' + ${book.id}}"
-                           class="btn btn-sm btn-light text-dark border-dark ">View</a></td>
-                    <div sec:authorize="hasRole('ROLE_USER')">
-                        <td><a th:href="@{'/books/checkout/' + ${book.id}}" th:if="${book.user == null}"
-                               class="btn btn-dark text-dark bg-light btn-sm">Rent</a></td>
-                    </div>
-                    <div sec:authorize="hasRole('ROLE_ADMIN')">
-                        <td><a th:href="@{'/books/edit/' + ${book.id}}"
-                               class="btn btn-dark text-dark bg-light btn-sm">Update</a></td>
-                    </div>
-                    <div sec:authorize="hasRole('ROLE_ADMIN')">
-                        <td><a th:href="@{'/books/delete/' + ${book.id}}"
-                               class="btn btn-dark text-dark bg-light btn-sm">Delete</a></td>
-                    </div>
-                    <div sec:authorize="hasRole('ROLE_ADMIN')">
-                        <td><a th:href="@{'/books/rental-history/' + ${book.id}}"
-                               class="btn btn-dark text-dark bg-light btn-sm">History</a></td>
-                    </div>
-                </tr>
+                <div th:if="${bookCase.hasBottomShelf()}">
+                    <tr th:each="book : ${bookCase.bottomShelf.books}">
+                        <td th:text="${bookCase.bottomShelf.shelfLocation}">Shelf#</td>
+                        <td th:text="${book.subject}">Subject</td>
+                        <td th:text="${book.title}">Title</td>
+                        <td th:text="${book.author}">Author</td>
+                        <td><a th:href="@{'/books/cover-image/' + ${book.id}}"
+                               class="btn btn-sm btn-light text-dark border-dark ">View</a></td>
+                        <div sec:authorize="hasRole('ROLE_USER')">
+                            <td><a th:href="@{'/books/checkout/' + ${book.id}}" th:if="${book.user == null}"
+                                   class="btn btn-dark text-dark bg-light btn-sm">Rent</a></td>
+                        </div>
+                        <div sec:authorize="hasRole('ROLE_ADMIN')">
+                            <td><a th:href="@{'/books/edit/' + ${book.id}}"
+                                   class="btn btn-dark text-dark bg-light btn-sm">Update</a></td>
+                        </div>
+                        <div sec:authorize="hasRole('ROLE_ADMIN')">
+                            <td><a th:href="@{'/books/delete/' + ${book.id}}"
+                                   class="btn btn-dark text-dark bg-light btn-sm">Delete</a></td>
+                        </div>
+                        <div sec:authorize="hasRole('ROLE_ADMIN')">
+                            <td><a th:href="@{'/books/rental-history/' + ${book.id}}"
+                                   class="btn btn-dark text-dark bg-light btn-sm">History</a></td>
+                        </div>
+                    </tr>
+                </div>
                 </tbody>
             </table>
             <br>
