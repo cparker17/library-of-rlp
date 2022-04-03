@@ -198,7 +198,8 @@ public class BookCaseServiceImpl implements BookCaseService {
                 if (book.getTitle().compareToIgnoreCase(newBook.getTitle()) > 0 &&
                         book.getBookNumber() != books.size() - 1) {
                     return bookShelf;
-                } else {
+                } else if (book.getTitle().compareToIgnoreCase(newBook.getTitle()) > 0 &&
+                        book.getBookNumber() == books.size() - 1) {
                     bookShelvesWithSubject.remove(bookShelf);
                     return getTargetBookShelf(bookShelvesWithSubject, newBook);
                 }
