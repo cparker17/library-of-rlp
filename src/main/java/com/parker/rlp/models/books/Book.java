@@ -9,7 +9,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Entity
 @AllArgsConstructor
@@ -67,6 +70,18 @@ public class Book {
             bookHistoryList = new ArrayList<>();
         } else {
             bookHistoryList.add(rentalHistory);
+        }
+    }
+
+    public void setTitle(String title) {
+        if (title.toUpperCase().startsWith("A")) {
+            String[] modifiedTitle = title.split(" ", 2);
+            this.title = modifiedTitle[1].concat(", A");
+        } else if (title.toUpperCase().startsWith("THE")) {
+            String[] modifiedTitle = title.split(" ", 2);
+            this.title = modifiedTitle[1].concat(", The");
+        } else {
+            this.title = title;
         }
     }
 }

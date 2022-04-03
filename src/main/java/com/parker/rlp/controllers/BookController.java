@@ -66,10 +66,8 @@ public class BookController {
             return "new-book";
         }
         try {
-            book.setDateAdded(LocalDate.now());
             bookService.saveBook(book);
             bookCaseService.addBookToBookCase(book);
-            //bookCaseService.loadBookCases();
             model.addAttribute("book", book);
             return "book-location";
         } catch (DuplicateBookException | NoSuchBookCaseException e) {

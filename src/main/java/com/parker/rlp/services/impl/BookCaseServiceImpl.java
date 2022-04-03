@@ -196,8 +196,11 @@ public class BookCaseServiceImpl implements BookCaseService {
             List<Book> books = bookShelf.getBooks();
             for (Book book : books) {
                 if (book.getTitle().compareToIgnoreCase(newBook.getTitle()) > 0 &&
-                        book.getBookNumber() != books.size()) {
+                        book.getBookNumber() != books.size() - 1) {
                     return bookShelf;
+                } else {
+                    bookShelvesWithSubject.remove(bookShelf);
+                    return getTargetBookShelf(bookShelvesWithSubject, newBook);
                 }
             }
         }
@@ -239,7 +242,9 @@ public class BookCaseServiceImpl implements BookCaseService {
     }
 
     private void getBookPositionAndSetLocation(Book newBook, BookShelf bookShelf, BookCase bookCase) {
-        bookShelf.getBooks().sort(Comparator.comparing(Book::getSubject).thenComparing(Book::getTitle));
+        bookShelf.getBooks().sort(Comparator.comparing(Book::getSubject, String.CASE_INSENSITIVE_ORDER)
+                .thenComparing(Book::getTitle, String.CASE_INSENSITIVE_ORDER));
+        System.out.println(bookShelf.getBooks().toString());
         bookShelfRepository.save(bookShelf);
         bookCaseRepository.save(bookCase);
 

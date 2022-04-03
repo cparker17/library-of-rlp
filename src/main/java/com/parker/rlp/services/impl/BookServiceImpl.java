@@ -39,6 +39,7 @@ public class BookServiceImpl implements BookService {
         if (bookRepository.findDistinctByIsbn(book.getIsbn()) != null) {
             throw new DuplicateBookException("This book already exists in our system.");
         } else {
+            book.setDateAdded(LocalDate.now());
             return bookRepository.save(book);
         }
     }
