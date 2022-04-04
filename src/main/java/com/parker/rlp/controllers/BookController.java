@@ -67,17 +67,8 @@ public class BookController {
         }
         try {
             bookService.saveBook(book);
-            String shiftDirection = bookCaseService.addBookToBookCase(book);
-            switch (shiftDirection) {
-                case "left" : {
-                    model.addAttribute("message", "Shift all books to the left.");
-                    break;
-                }
-                case "right" : {
-                    model.addAttribute("message", "Shift all books to the right.");
-                    break;
-                }
-            }
+            List<String> shiftDirections = bookCaseService.addBookToBookCase(book);
+            model.addAttribute("shiftDirections", shiftDirections);
             model.addAttribute("book", book);
             return "book-location";
         } catch (DuplicateBookException | NoSuchBookCaseException e) {

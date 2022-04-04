@@ -13,13 +13,14 @@
 <div th:replace="fragments :: navigation"/>
 <br>
 <center>
-<h1>New Book Location</h1><br>
-<div th:object="${book}">
-    <p th:text="'     Book Case No: ' + ${book.bookCaseNumber}">Book Case No</p>
-    <p th:text="'     Book Shelf No: ' + ${book.bookShelfNumber}">Book Shelf No</p>
-    <p th:text="'     Book Position No: ' + ${book.bookNumber}">Book Position No</p>
-</div>
-    <br><br><p th:text="${message}">Shift Direction</p>
+    <h1>New Book Location</h1><br>
+    <div th:object="${book}">
+        <p th:text="'     Book Case No: ' + ${book.bookCaseNumber}">Book Case No</p>
+        <p th:text="'     Book Shelf No: ' + ${book.bookShelfNumber}">Book Shelf No</p>
+        <p th:text="'     Book Position No: ' + ${book.bookNumber}">Book Position No</p>
+    </div>
+    <br><br>
+        <p th:each="shiftDirection : ${shiftDirections}" th:text="${shiftDirection}">Shift Direction</p>
 </center>
 </body>
 </html>
