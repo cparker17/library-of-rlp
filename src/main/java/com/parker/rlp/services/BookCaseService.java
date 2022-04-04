@@ -12,5 +12,5 @@ public interface BookCaseService {
     void loadBookCases () throws NoSuchBookCaseException;
     List<BookCase> getAllBooks();
     void addBookCase(BookCase bookCase);
-    void addBookToBookCase(Book book) throws NoSuchBookCaseException;
+    String addBookToBookCase(Book book) throws NoSuchBookCaseException;
 }

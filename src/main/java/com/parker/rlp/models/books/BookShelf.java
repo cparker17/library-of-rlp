@@ -21,7 +21,7 @@ public class BookShelf {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Book> books;
 
-    private Integer bookCaseNumber;
+    private Long bookCaseNumber;
     private Integer shelfLocation;
     private Double shelfWidth;
     private Double openSpaceWidth;

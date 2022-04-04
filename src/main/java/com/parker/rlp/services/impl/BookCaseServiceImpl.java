@@ -41,7 +41,6 @@ public class BookCaseServiceImpl implements BookCaseService {
             shelvesToPersist.add(upperShelf);
             bookCase.addShelfToBookCase(upperShelf);
         }
-        bookShelfRepository.saveAll(shelvesToPersist);
 
         if (bookCase.hasBottomShelf()) {
             BookShelf bottomShelf = new BookShelf();
@@ -50,10 +49,15 @@ public class BookCaseServiceImpl implements BookCaseService {
             bottomShelf.setOpenSpaceWidth(bookCase.getBookCaseWidth() * bookCase.getAvailableSpace() / 100);
             bookCase.setBottomShelf(bottomShelf);
             bottomShelf.setIsBottomShelf(true);
-            bookShelfRepository.save(bottomShelf);
+            shelvesToPersist.add(bottomShelf);
         }
 
-        bookCaseRepository.save(bookCase);
+        bookShelfRepository.saveAll(shelvesToPersist);
+        bookCase = bookCaseRepository.save(bookCase);
+        for (BookShelf bookShelf : shelvesToPersist) {
+            bookShelf.setBookCaseNumber(bookCase.getId());
+        }
+        bookShelfRepository.saveAll(shelvesToPersist);
     }
 
     @Override
@@ -86,6 +90,7 @@ public class BookCaseServiceImpl implements BookCaseService {
             }
         }
 
+        List<BookShelf> bottomShelvesToPersist = new ArrayList<>();
         int bookCount = 1;
         int shelfCount = 0;
         int caseCount = 0;
@@ -113,6 +118,7 @@ public class BookCaseServiceImpl implements BookCaseService {
                     bookShelf = bookShelves.get(shelfCount);
                 } else {
                     if (++caseCount < totalBookCaseCount) {
+                        bottomShelvesToPersist.add(bottomShelf);
                         bookCase = bookCases.get(caseCount);
                         bookShelves = bookCase.getUpperShelves();
                         bookShelf = bookShelves.get(0);
@@ -130,6 +136,7 @@ public class BookCaseServiceImpl implements BookCaseService {
             setBookLocation(bookCount++, book, bookShelf, bookCase);
         }
 
+        bookShelfRepository.saveAll(bottomShelvesToPersist);
         bookRepository.saveAll(allBooks);
         setOpenSpaceWidthAfterLoading(bookCases, bookShelves);
     }
@@ -152,9 +159,10 @@ public class BookCaseServiceImpl implements BookCaseService {
     }
 
     @Transactional
-    public void addBookToBookCase(Book newBook) throws NoSuchBookCaseException {
+    public String addBookToBookCase(Book newBook) throws NoSuchBookCaseException {
         List<BookShelf> bookShelvesWithSubject = getShelvesWithTargetSubject(newBook);
         BookShelf targetBookShelf = getTargetBookShelf(bookShelvesWithSubject, newBook);
+        String shiftDirection;
         for (BookCase bookCase : bookCaseRepository.findAll()) {
             for (BookShelf bookShelf : bookCase.getUpperShelves()) {
                 if (bookShelf.getId().equals(targetBookShelf.getId())) {
@@ -162,13 +170,15 @@ public class BookCaseServiceImpl implements BookCaseService {
                             bookCase.getMaxBookDepth()) {
                         addBookToBottomShelf(newBook, bookCase);
                     } else {
-                        addBook(newBook, targetBookShelf, bookCase);
+                        shiftDirection = addBook(newBook, targetBookShelf, bookCase);
                         targetBookShelf.updateOpenSpaceWidth(newBook.getThickness());
+                        return shiftDirection;
                     }
-                    return;
+
                 }
             }
         }
+        return null;
     }
 
     private List<BookShelf> getShelvesWithTargetSubject(Book newBook) {
@@ -208,7 +218,7 @@ public class BookCaseServiceImpl implements BookCaseService {
         return bookShelvesWithSubject.get(bookShelvesWithSubject.size() - 1);
     }
 
-    private void addBookToBottomShelf(Book newBook, BookCase bookCase) {
+    private void addBookToBottomShelf(Book newBook, BookCase bookCase) throws NoSuchBookCaseException {
         if (bookCase.hasBottomShelf()) {
             addBook(newBook, bookCase.getBottomShelf(), bookCase);
             bookCase.getBottomShelf().updateOpenSpaceWidth(newBook.getThickness());
@@ -222,30 +232,147 @@ public class BookCaseServiceImpl implements BookCaseService {
         }
     }
 
-    private void addBook(Book newBook, BookShelf bookShelf, BookCase bookCase) {
+    private String addBook(Book newBook, BookShelf bookShelf, BookCase bookCase) throws NoSuchBookCaseException {
         if (bookShelf.getOpenSpaceWidth() > newBook.getThickness()) {
             bookShelf.addBookToBookShelf(newBook, newBook.getThickness());
+            getBookPositionAndSetLocation(newBook, bookShelf, bookCase);
         } else {
-            BookShelf openBookShelf = getPreviousOpenShelf(bookShelf, newBook);
-            if (openBookShelf != null) {
-                openBookShelf.updateOpenSpaceWidth(newBook.getThickness());
-                addBook(newBook, openBookShelf, bookCase);
+            List<Book> booksToBeShifted;
+            if (isShiftLeft(bookShelf)) {
+                booksToBeShifted = getBooksToBeShiftedLeft(bookShelf, newBook.getThickness());
             } else {
-                openBookShelf = getNextOpenShelf(bookShelf, newBook);
-                if (openBookShelf != null) {
-                    openBookShelf.updateOpenSpaceWidth(newBook.getThickness());
-                    addBook(newBook, openBookShelf, bookCase);
-                }
+                booksToBeShifted = getBooksToBeShiftedRight(bookShelf, newBook.getThickness());
+            }
+            bookShelf.getBooks().removeAll(booksToBeShifted);
+            for (Book bookToBeShifted : booksToBeShifted) {
+                bookShelf.updateOpenSpaceWidth((bookToBeShifted.getThickness() * -1));
+            }
+            bookShelf.addBookToBookShelf(newBook, newBook.getThickness());
+            getBookPositionAndSetLocation(newBook, bookShelf, bookCase);
+
+            List<BookShelf> shelves = bookShelfRepository.findAll();
+            shelves.removeIf(BookShelf::isBottomShelf);
+            List<String> shiftDirections = new ArrayList<>();
+
+            if (isShiftLeft(bookShelf)) {
+                shelves.removeIf(bookShelf1 -> bookShelf1.getId() >= bookShelf.getId());
+                shiftBooksLeft(booksToBeShifted, bookShelf, shelves, shiftDirections);
+                return "left";
+            } else {
+                shelves.removeIf(bookShelf1 -> bookShelf1.getId() <= bookShelf.getId());
+                shiftBooksRight(booksToBeShifted, shelves, shiftDirections);
+                return "right";
             }
         }
 
-        getBookPositionAndSetLocation(newBook, bookShelf, bookCase);
+        return null;
+    }
+
+    private List<Book> getBooksToBeShiftedLeft(BookShelf bookShelf, double bookThickness) {
+        List<Book> booksToBeShifted = new ArrayList<>();
+        double totalBookThickness = bookThickness;
+        for (Book book : bookShelf.getBooks()) {
+            if (totalBookThickness > bookShelf.getOpenSpaceWidth()) {
+                booksToBeShifted.add(book);
+                totalBookThickness -= book.getThickness();
+            }
+        }
+        return booksToBeShifted;
+    }
+
+    private List<Book> getBooksToBeShiftedRight(BookShelf bookShelf, double bookThickness) {
+        List<Book> booksToBeShifted = new ArrayList<>();
+        double totalBookThickness = bookThickness;
+        List<Book> books = bookShelf.getBooks();
+        for (int i = books.size() - 1; i >= 0; i--) {
+            if (totalBookThickness > bookShelf.getOpenSpaceWidth()) {
+                booksToBeShifted.add(books.get(i));
+                totalBookThickness -= books.get(i).getThickness();
+            }
+        }
+        return booksToBeShifted;
+    }
+
+    private void shiftBooksLeft(List<Book> booksToBeShifted, BookShelf bookShelf, List<BookShelf> upperShelves,
+                                List<String> shiftDirections) throws NoSuchBookCaseException {
+        double totalBookThickness = 0;
+        for (Book bookToBeShifted : booksToBeShifted) {
+            totalBookThickness += bookToBeShifted.getThickness();
+        }
+        List<Book> booksToBeShiftedNext;
+        Optional<BookCase> bookCaseOptional;
+
+        for (int i = upperShelves.size() - 1; i >= 0; i--) {
+            bookCaseOptional = bookCaseRepository.findById(upperShelves.get(i).getBookCaseNumber());
+            if (bookCaseOptional.isPresent()) {
+                if (bookShelf.getOpenSpaceWidth() > totalBookThickness) {
+                    for (Book book : booksToBeShifted) {
+                        addBook(book, upperShelves.get(i), bookCaseOptional.get());
+                    }
+                    break;
+                } else {
+                    booksToBeShiftedNext = getBooksToBeShiftedLeft(upperShelves.get(i), totalBookThickness);
+                    upperShelves.get(i).getBooks().removeAll(booksToBeShiftedNext);
+                    for (Book book : booksToBeShiftedNext) {
+                        bookShelf.updateOpenSpaceWidth(book.getThickness() * -1);
+                    }
+                    for (Book book : booksToBeShifted) {
+                        addBook(book, upperShelves.get(i), bookCaseOptional.get());
+                    }
+                    booksToBeShifted = booksToBeShiftedNext;
+                    totalBookThickness = 0;
+                    for (Book bookToBeShifted : booksToBeShifted) {
+                        totalBookThickness += bookToBeShifted.getThickness();
+                    }
+                }
+            }
+        }
+    }
+
+    private void shiftBooksRight(List<Book> booksToBeShifted, List<BookShelf> upperShelves,
+                                 List<String> shiftDirections) throws NoSuchBookCaseException {
+        double totalBookThickness = 0;
+        for (Book bookToBeShifted : booksToBeShifted) {
+            totalBookThickness += bookToBeShifted.getThickness();
+        }
+
+
+
+        List<Book> booksToBeShiftedNext;
+        Optional<BookCase> bookCaseOptional;
+        for (BookShelf bookShelf : upperShelves) {
+            bookCaseOptional = bookCaseRepository.findById(bookShelf.getBookCaseNumber());
+            if (bookCaseOptional.isPresent()) {
+                shiftDirections.add("Take " + booksToBeShifted.size() + " books from Bookcase #" +
+                        bookShelf.getBookCaseNumber() + ", Shelf #" + bookShelf.getShelfLocation() +
+                        " and move them to the start of the next ")
+                if (bookShelf.getOpenSpaceWidth() > totalBookThickness) {
+                    for (Book book : booksToBeShifted) {
+                        addBook(book, bookShelf, bookCaseOptional.get());
+                    }
+                    break;
+                } else {
+                    booksToBeShiftedNext = getBooksToBeShiftedRight(bookShelf, totalBookThickness);
+                    bookShelf.getBooks().removeAll(booksToBeShiftedNext);
+                    for (Book book : booksToBeShiftedNext) {
+                        bookShelf.updateOpenSpaceWidth(book.getThickness() * -1);
+                    }
+                    for (Book book : booksToBeShifted) {
+                        addBook(book, bookShelf, bookCaseOptional.get());
+                    }
+                    booksToBeShifted = booksToBeShiftedNext;
+                    totalBookThickness = 0;
+                    for (Book bookToBeShifted : booksToBeShifted) {
+                        totalBookThickness += bookToBeShifted.getThickness();
+                    }
+                }
+            }
+        }
     }
 
     private void getBookPositionAndSetLocation(Book newBook, BookShelf bookShelf, BookCase bookCase) {
         bookShelf.getBooks().sort(Comparator.comparing(Book::getSubject, String.CASE_INSENSITIVE_ORDER)
                 .thenComparing(Book::getTitle, String.CASE_INSENSITIVE_ORDER));
-        System.out.println(bookShelf.getBooks().toString());
         bookShelfRepository.save(bookShelf);
         bookCaseRepository.save(bookCase);
 
@@ -273,87 +400,5 @@ public class BookCaseServiceImpl implements BookCaseService {
         }
 
         return previousOpenSpaceWidth > afterOpenSpaceWidth;
-    }
-
-    private BookShelf getPreviousOpenShelf(BookShelf bookShelf, Book newBook) {
-        Optional<BookShelf> previousShelfOptional = bookShelfRepository.findById(bookShelf.getId() - 1);
-        if (previousShelfOptional.isPresent()) {
-            BookShelf previousBookShelf = previousShelfOptional.get();
-            if (previousBookShelf.isBottomShelf()) {
-                previousShelfOptional = bookShelfRepository.findById(bookShelf.getId() - 2);
-                if (previousShelfOptional.isPresent()) {
-                    previousBookShelf = previousShelfOptional.get();
-                }
-            }
-            if (previousBookShelf.getOpenSpaceWidth() > newBook.getThickness()) {
-                return previousBookShelf;
-            } else {
-                BookShelf previousOpenShelf = getPreviousOpenShelf(previousBookShelf, newBook);
-                if (previousOpenShelf == null) {
-                    return null;
-                } else if (previousOpenShelf.getOpenSpaceWidth() > newBook.getThickness()) {
-                    return previousOpenShelf;
-                }
-            }
-        }
-        return null;
-    }
-
-    private BookShelf getNextOpenShelf(BookShelf bookShelf, Book newBook) {
-        Optional<BookShelf> nextShelfOptional = bookShelfRepository.findById(bookShelf.getId() + 1);
-        if (nextShelfOptional.isPresent()) {
-            BookShelf nextBookShelf = nextShelfOptional.get();
-            if (nextBookShelf.isBottomShelf()) {
-                nextShelfOptional = bookShelfRepository.findById(bookShelf.getId() + 2);
-                if (nextShelfOptional.isPresent()) {
-                    nextBookShelf = nextShelfOptional.get();
-                }
-            }
-            if (nextBookShelf.getOpenSpaceWidth() > newBook.getThickness()) {
-                return nextBookShelf;
-            } else {
-                BookShelf nextOpenShelf = getNextOpenShelf(nextBookShelf, newBook);
-                if (nextOpenShelf == null) {
-                    return null;
-                } else if (nextOpenShelf.getOpenSpaceWidth() > newBook.getThickness()) {
-                    return nextOpenShelf;
-                }
-            }
-        }
-        return null;
-    }
-
-    private String getShiftDirection(Long bookCaseId, Integer bookShelfLocation) {
-        double beforeAvailableWidth = getBeforeAvailableWidth(bookCaseId, bookShelfLocation);
-        double afterAvailableWidth = getAfterAvailableWidth(beforeAvailableWidth);
-        if (beforeAvailableWidth > afterAvailableWidth) {
-            return "Shift all books to the left.";
-        } else {
-            return "Shift all books to the right.";
-        }
-    }
-
-    private double getBeforeAvailableWidth(Long bookCaseId, Integer bookShelfLocation) {
-        double beforeAvailableWidth = 0;
-        for (BookCase bookCase : bookCaseRepository.findAll()) {
-            for (BookShelf bookShelf : bookCase.getUpperShelves()) {
-                if (bookCase.getId().equals(bookCaseId) && bookShelf.getShelfLocation().equals(bookShelfLocation)) {
-                    return beforeAvailableWidth;
-                } else {
-                    beforeAvailableWidth += bookShelf.getOpenSpaceWidth();
-                }
-            }
-        }
-        return beforeAvailableWidth;
-    }
-
-    private double getAfterAvailableWidth(double beforeAvailableWidth) {
-        double afterAvailableWidth = 0;
-        for (BookCase bookCase : bookCaseRepository.findAll()) {
-            for (BookShelf bookShelf : bookCase.getUpperShelves()) {
-                afterAvailableWidth += bookShelf.getOpenSpaceWidth();
-            }
-        }
-        return afterAvailableWidth - beforeAvailableWidth;
     }
 }
