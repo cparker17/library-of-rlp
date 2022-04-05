@@ -20,10 +20,7 @@ public class RentalHistory {
     private Long id;
 
     private Long bookId;
-
     private String title;
-
     private LocalDate dateRented;
-
     private LocalDate dateReturned;
 }

@@ -1,6 +1,7 @@
 package com.parker.rlp.services;
 
 import com.parker.rlp.exceptions.DuplicateUserException;
+import com.parker.rlp.exceptions.NoRentalHistoryException;
 import com.parker.rlp.exceptions.NoSuchUserException;
 import com.parker.rlp.models.books.Book;
 import com.parker.rlp.models.RentalHistory;
@@ -19,5 +20,5 @@ public interface UserService {
     void returnBook(Long id, User user);
     void checkoutBook(Book book, User user);
     User updateUser(User user);
-    List<RentalHistory> getUserRentalHistory(Long id);
+    List<RentalHistory> getUserRentalHistory(Long id) throws NoRentalHistoryException, NoSuchUserException;
 }

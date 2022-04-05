@@ -20,8 +20,6 @@ public class BookHistory {
     private Long id;
 
     private String username;
-
     private LocalDate dateRented;
-
     private LocalDate dateReturned;
 }

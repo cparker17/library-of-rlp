@@ -52,13 +52,6 @@ public class User {
     @JoinColumn(name = "user_id")
     private List<RentalHistory> rentalHistoryList;
 
-    public void addBook(Book book) {
-        if (books.isEmpty()) {
-            books = new ArrayList<>();
-        }
-        books.add(book);
-    }
-
     @ManyToOne(cascade = CascadeType.MERGE)
     private Role role;
 
@@ -73,6 +66,13 @@ public class User {
 
     @Column(nullable = false)
     private boolean isEnabled = true;
+
+    public void addBook(Book book) {
+        if (books.isEmpty()) {
+            books = new ArrayList<>();
+        }
+        books.add(book);
+    }
 
     public void addRentalHistory(RentalHistory rentalHistory) {
         if (rentalHistoryList == null) {

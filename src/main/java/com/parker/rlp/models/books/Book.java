@@ -4,15 +4,11 @@ import com.parker.rlp.models.BookHistory;
 import com.parker.rlp.models.User;
 import com.sun.istack.NotNull;
 import lombok.*;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Entity
 @AllArgsConstructor
@@ -31,6 +27,10 @@ public class Book {
     private String title;
 
     @NotNull
+    @NotBlank(message = "Subject required.")
+    private String subject;
+
+    @NotNull
     @NotBlank(message = "Author required.")
     private String author;
 
@@ -38,25 +38,17 @@ public class Book {
     @NotBlank(message = "ISBN required.")
     private String isbn;
 
-    private String imageFile;
-
-    private LocalDate dateAdded;
-
-    private LocalDate dateRented;
-
-    private LocalDate dateReturned;
-
-    @NotNull
-    @NotBlank(message = "Subject required.")
-    private String subject;
-
-    private Long bookCaseNumber;
-    private Integer bookShelfNumber;
-    private Integer bookNumber;
-
     private Double height;
     private Double depth;
     private Double thickness;
+
+    private String imageFile;
+    private LocalDate dateAdded;
+    private LocalDate dateRented;
+    private LocalDate dateReturned;
+    private Long bookCaseNumber;
+    private Integer bookShelfNumber;
+    private Integer bookNumber;
 
     @ManyToOne
     private User user;

@@ -97,6 +97,7 @@ public class RlpApplication {
 								.dateAdded(LocalDate.now())
 								.build();
 						booksToPersist.add(book);
+
 					}
 					bookRepository.saveAll(booksToPersist);
 					file.close();

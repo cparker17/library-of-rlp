@@ -2,8 +2,10 @@ package com.parker.rlp.controllers;
 
 import com.parker.rlp.exceptions.NoSuchBookException;
 import com.parker.rlp.exceptions.NoSuchUserException;
+import com.parker.rlp.models.SecurityUser;
 import com.parker.rlp.models.User;
 import com.parker.rlp.models.UserFactory;
+import com.parker.rlp.models.books.Book;
 import com.parker.rlp.services.BookService;
 import com.parker.rlp.services.SecurityUserService;
 import com.parker.rlp.services.UserService;
@@ -12,11 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class ApplicationController {
+public class ViewController {
     @Autowired
     SecurityUserService securityUserService;
 
@@ -53,15 +55,40 @@ public class ApplicationController {
         return "error-page";
     }
 
-    @RequestMapping("/books/search")
-    public String displaySearchResults(Model model, @RequestParam(value="searchText") String searchText) {
+    @RequestMapping("/books/edit/{id}")
+    public String viewEditBookPage(Model model, @PathVariable(name = "id") Long id) {
         try {
-            model.addAttribute("books", bookService.getSearchResults(searchText));
-            return "search-results";
+            Book book = bookService.getBookByBookId(id);
+            model.addAttribute("book", book);
+            return "edit-book";
         } catch (NoSuchBookException e) {
             model.addAttribute("message", e.getMessage());
             return "error-page";
         }
+    }
 
+    @GetMapping("/sign-in")
+    public String viewSignInPage(Model model) {
+        model.addAttribute("securityUser", new SecurityUser());
+        return "login";
+    }
+
+    @GetMapping("/books/new")
+    public String viewNewBookPage(Model model) {
+        Book book = new Book();
+        model.addAttribute("book", book);
+        return "new-book";
+    }
+
+    @GetMapping("/register-form")
+    public String viewRegisterAccountPage(Model model) {
+        model.addAttribute(new User());
+        return "register";
+    }
+
+    @GetMapping("/update")
+    public String viewUpdateUserPage(Authentication auth, Model model) {
+        model.addAttribute("user", UserFactory.createUser(auth));
+        return "update-user";
     }
 }

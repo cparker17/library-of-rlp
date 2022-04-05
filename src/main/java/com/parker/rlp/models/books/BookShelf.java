@@ -25,14 +25,15 @@ public class BookShelf {
     private Integer shelfLocation;
     private Double shelfWidth;
     private Double openSpaceWidth;
+    private Double availableSpace;
     private boolean isBottomShelf;
 
-    public void addBookToBookShelf(Book book, double bookThickness) {
+    public void addBookToBookShelf(Book book) {
         if (books == null) {
             books = new ArrayList<>();
         }
         books.add(book);
-        updateOpenSpaceWidth(bookThickness);
+        updateOpenSpaceWidth(book.getThickness());
     }
 
     public void updateOpenSpaceWidth(double bookThickness) {

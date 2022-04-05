@@ -34,7 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .mvcMatchers("/delete{id}", "/user-list", "/user-list", "/books/new", "/books/save",
                         "/books/update/{id}", "/books/delete/{id}", "/books/edit/{id}", "/delete/{id}", "/user-list",
-                        "/user-books/{id}", "/user/rental-history/{id}", "/books/rental-history/{id}").hasRole("ADMIN")
+                        "/user-books/{id}", "/user/rental-history/{id}", "/books/rental-history/{id}",
+                        "/bookcase/new", "/bookcase/save").hasRole("ADMIN")
 
                 .mvcMatchers(HttpMethod.POST, "/update/{id}").hasRole("ADMIN")
 

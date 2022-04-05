@@ -4,12 +4,13 @@ import com.parker.rlp.exceptions.DuplicateBookException;
 import com.parker.rlp.exceptions.NoSuchBookCaseException;
 import com.parker.rlp.exceptions.NoSuchBookException;
 import com.parker.rlp.models.books.Book;
-import com.parker.rlp.models.BookHistory;
 import com.parker.rlp.repositories.BookHistoryRepository;
 import com.parker.rlp.repositories.BookRepository;
 import com.parker.rlp.repositories.UserRepository;
 import com.parker.rlp.services.BookCaseService;
+import com.parker.rlp.services.BookHistoryService;
 import com.parker.rlp.services.BookService;
+import com.parker.rlp.services.RentalHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,28 +21,32 @@ import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
-    private final BookRepository bookRepository;
-    private final UserRepository userRepository;
-    private final BookHistoryRepository bookHistoryRepository;
-
     @Autowired
     BookCaseService bookCaseService;
 
-    public BookServiceImpl(BookRepository bookRepository, UserRepository userRepository,
-                           BookHistoryRepository rentalHistoryRepository) {
-        this.bookRepository = bookRepository;
-        this.userRepository = userRepository;
-        this.bookHistoryRepository = rentalHistoryRepository;
-    }
+    @Autowired
+    RentalHistoryService rentalHistoryService;
+
+    @Autowired
+    BookHistoryService bookHistoryService;
+
+    @Autowired
+    BookRepository bookRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    BookHistoryRepository bookHistoryRepository;
 
     @Override
     public Book saveBook(Book book) throws DuplicateBookException {
         if (bookRepository.findDistinctByIsbn(book.getIsbn()) != null) {
             throw new DuplicateBookException("This book already exists in our system.");
-        } else {
-            book.setDateAdded(LocalDate.now());
-            return bookRepository.save(book);
         }
+        book.setDateAdded(LocalDate.now());
+        return bookRepository.save(book);
+
     }
 
     @Override
@@ -60,28 +65,24 @@ public class BookServiceImpl implements BookService {
         availableBooks.removeIf(book -> book.getUser() != null);
         if (availableBooks.isEmpty()) {
             throw new NoSuchBookException("There aren't any books available at this time.");
-        } else {
-            return availableBooks;
         }
+        return availableBooks;
     }
 
     @Override
     public void deleteBook(Long id) throws NoSuchBookException, NoSuchBookCaseException {
         if (bookRepository.findById(id).isEmpty()) {
             throw new NoSuchBookException("A book with that id does not exist");
-        } else {
-            bookRepository.deleteById(id);
-            //bookCaseService.loadBookCases();
         }
+        bookRepository.deleteById(id);
     }
 
     @Override
     public Book getBookByBookId(Long id) throws NoSuchBookException {
         if (bookRepository.findById(id).isEmpty()) {
             throw new NoSuchBookException("A book with that id does not exist.");
-        } else {
-            return bookRepository.findById(id).get();
         }
+        return bookRepository.findById(id).get();
     }
 
     @Override
@@ -96,22 +97,14 @@ public class BookServiceImpl implements BookService {
     public List<Book> getUserBooks(Long id) throws NoSuchBookException {
         if (bookRepository.findAllByUserId(id).isEmpty()) {
             throw new NoSuchBookException("Customer does not have any books checked out.");
-        } else {
-            return bookRepository.findAllByUserId(id);
         }
+        return bookRepository.findAllByUserId(id);
     }
 
     @Override
     public Book returnBook(Long id) {
         Book book = bookRepository.getById(id);
-        book.setDateReturned(LocalDate.now());
-        BookHistory rentalHistory = BookHistory.builder()
-                .username(book.getUser().getUsername())
-                .dateRented(book.getDateRented())
-                .dateReturned(book.getDateReturned())
-                .build();
-        book.addRentalHistory(rentalHistory);
-        bookHistoryRepository.save(rentalHistory);
+        bookHistoryService.updateBookRentalHistory(book);
         book.setUser(null);
         return bookRepository.save(book);
     }
@@ -126,9 +119,8 @@ public class BookServiceImpl implements BookService {
         List<Book> books = bookRepository.findBooksByDateAddedIsAfter(LocalDate.now().minusDays(30L));
         if (books.isEmpty()) {
             throw new NoSuchBookException("We don't have any new books in the last 30 days.");
-        } else {
-            return books;
         }
+        return books;
     }
 
     @Override
@@ -138,16 +130,10 @@ public class BookServiceImpl implements BookService {
         searchResults.addAll(bookRepository.findBooksByTitleContaining(searchText));
         searchResults.addAll(bookRepository.findBooksByAuthorContaining(searchText));
         searchResults.addAll(bookRepository.findBooksByIsbnContaining(searchText));
-        searchResults = searchResults.stream()
-                .distinct()
-                .collect(Collectors.toList());
-        return searchResults;
-    }
-
-    @Override
-    public List<BookHistory> getBookRentalHistory(Long id) {
-        Book book = bookRepository.findById(id).get();
-        return book.getBookHistoryList();
+        if (searchResults.isEmpty()) {
+            throw new NoSuchBookException("We don't have any books for that search.");
+        }
+        return searchResults.stream().distinct().collect(Collectors.toList());
     }
 
     @Override

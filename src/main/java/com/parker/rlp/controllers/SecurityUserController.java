@@ -3,7 +3,6 @@ package com.parker.rlp.controllers;
 import com.parker.rlp.exceptions.DuplicateUserException;
 import com.parker.rlp.models.SecurityUser;
 import com.parker.rlp.models.User;
-import com.parker.rlp.services.SecurityUserService;
 import com.parker.rlp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,9 +18,6 @@ import javax.validation.Valid;
 public class SecurityUserController {
     @Autowired
     UserService userService;
-
-    @Autowired
-    SecurityUserService securityUserService;
 
     @GetMapping("/login")
     String login() {
@@ -40,12 +36,6 @@ public class SecurityUserController {
             model.addAttribute("message", e.getMessage());
             return "error-page";
         }
-    }
-
-    @GetMapping("/sign-in")
-    public String viewSignInPage(Model model) {
-        model.addAttribute("securityUser", new SecurityUser());
-        return "login";
     }
 
     @GetMapping("/login-error")

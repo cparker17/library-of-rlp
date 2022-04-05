@@ -23,6 +23,5 @@ public interface BookService {
     Book updateBook(Book book);
     List<Book> getNewArrivals() throws NoSuchBookException;
     List<Book> getSearchResults(String searchText) throws NoSuchBookException;
-    List<BookHistory> getBookRentalHistory(Long id);
     Book getLatestArrival();
 }
