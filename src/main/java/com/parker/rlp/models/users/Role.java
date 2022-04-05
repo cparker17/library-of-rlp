@@ -1,4 +1,4 @@
-package com.parker.rlp.models;
+package com.parker.rlp.models.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

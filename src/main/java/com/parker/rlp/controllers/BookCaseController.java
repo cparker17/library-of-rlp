@@ -1,7 +1,7 @@
 package com.parker.rlp.controllers;
 
-import com.parker.rlp.exceptions.DuplicateBookException;
-import com.parker.rlp.exceptions.NoSuchBookCaseException;
+import com.parker.rlp.exceptions.book.DuplicateBookException;
+import com.parker.rlp.exceptions.book.NoSuchBookCaseException;
 import com.parker.rlp.models.books.Book;
 import com.parker.rlp.models.books.BookCase;
 import com.parker.rlp.services.BookCaseService;
@@ -25,13 +25,8 @@ public class BookCaseController {
     BookService bookService;
 
     @GetMapping("/admin/loadBookCases")
-    public String loadBookCases(Model model) {
-        try {
-            bookCaseService.loadBookCases();
-        } catch (NoSuchBookCaseException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error-page";
-        }
+    public String loadBookCases(Model model) throws NoSuchBookCaseException {
+        bookCaseService.loadBookCases();
         return "book-index";
     }
 
@@ -48,19 +43,15 @@ public class BookCaseController {
     }
 
     @RequestMapping("/books/save")
-    public String saveBookToBookCase(Model model, @Valid @ModelAttribute("book") Book book, Errors errors) {
+    public String saveBookToBookCase(Model model, @Valid @ModelAttribute("book") Book book, Errors errors)
+            throws DuplicateBookException, NoSuchBookCaseException {
         if (errors.hasErrors()) {
             return "new-book";
         }
-        try {
-            bookService.saveBook(book);
-            model.addAttribute("shiftDirections", bookCaseService.addBookToBookCase(book));
-            model.addAttribute("book", book);
-            return "book-location";
-        } catch (DuplicateBookException | NoSuchBookCaseException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error-page";
-        }
+        bookService.saveBook(book);
+        model.addAttribute("shiftDirections", bookCaseService.addBookToBookCase(book));
+        model.addAttribute("book", book);
+        return "book-location";
     }
 
     @GetMapping("/books")

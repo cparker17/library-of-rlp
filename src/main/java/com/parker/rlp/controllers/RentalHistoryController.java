@@ -1,7 +1,7 @@
 package com.parker.rlp.controllers;
 
-import com.parker.rlp.exceptions.NoRentalHistoryException;
-import com.parker.rlp.exceptions.NoSuchUserException;
+import com.parker.rlp.exceptions.user.NoRentalHistoryException;
+import com.parker.rlp.exceptions.user.NoSuchUserException;
 import com.parker.rlp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,15 +15,10 @@ public class RentalHistoryController {
     UserService userService;
 
     @GetMapping("/user/rental-history/{id}")
-    public String viewUserRentalHistory(Model model, @PathVariable(name = "id") Long id) {
-        try {
-            model.addAttribute("history", userService.getUserRentalHistory(id));
-            model.addAttribute("user", userService.getUser(id));
-            return "user-history";
-        } catch(NoSuchUserException | NoRentalHistoryException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error-page";
-        }
-
+    public String viewUserRentalHistory(Model model, @PathVariable(name = "id") Long id)
+            throws NoRentalHistoryException, NoSuchUserException {
+        model.addAttribute("history", userService.getUserRentalHistory(id));
+        model.addAttribute("user", userService.getUser(id));
+        return "user-history";
     }
 }

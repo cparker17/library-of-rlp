@@ -1,11 +1,11 @@
 package com.parker.rlp.services;
 
-import com.parker.rlp.exceptions.DuplicateUserException;
-import com.parker.rlp.exceptions.NoRentalHistoryException;
-import com.parker.rlp.exceptions.NoSuchUserException;
+import com.parker.rlp.exceptions.user.DuplicateUserException;
+import com.parker.rlp.exceptions.user.NoRentalHistoryException;
+import com.parker.rlp.exceptions.user.NoSuchUserException;
 import com.parker.rlp.models.books.Book;
-import com.parker.rlp.models.RentalHistory;
-import com.parker.rlp.models.User;
+import com.parker.rlp.models.users.RentalHistory;
+import com.parker.rlp.models.users.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

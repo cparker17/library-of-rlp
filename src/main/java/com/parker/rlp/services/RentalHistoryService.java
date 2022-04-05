@@ -1,6 +1,6 @@
 package com.parker.rlp.services;
 
-import com.parker.rlp.models.User;
+import com.parker.rlp.models.users.User;
 import com.parker.rlp.models.books.Book;
 import org.springframework.stereotype.Service;
 

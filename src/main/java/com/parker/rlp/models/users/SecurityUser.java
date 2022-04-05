@@ -1,5 +1,6 @@
-package com.parker.rlp.models;
+package com.parker.rlp.models.users;
 
+import com.parker.rlp.models.users.User;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

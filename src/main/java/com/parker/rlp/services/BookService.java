@@ -1,10 +1,9 @@
 package com.parker.rlp.services;
 
-import com.parker.rlp.exceptions.DuplicateBookException;
-import com.parker.rlp.exceptions.NoSuchBookCaseException;
-import com.parker.rlp.exceptions.NoSuchBookException;
+import com.parker.rlp.exceptions.book.DuplicateBookException;
+import com.parker.rlp.exceptions.book.NoSuchBookCaseException;
+import com.parker.rlp.exceptions.book.NoSuchBookException;
 import com.parker.rlp.models.books.Book;
-import com.parker.rlp.models.BookHistory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

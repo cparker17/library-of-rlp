@@ -1,9 +1,9 @@
 package com.parker.rlp;
 
-import com.parker.rlp.models.Address;
+import com.parker.rlp.models.users.Address;
 import com.parker.rlp.models.books.Book;
-import com.parker.rlp.models.Role;
-import com.parker.rlp.models.User;
+import com.parker.rlp.models.users.Role;
+import com.parker.rlp.models.users.User;
 import com.parker.rlp.repositories.BookRepository;
 import com.parker.rlp.repositories.RoleRepository;
 import com.parker.rlp.repositories.UserRepository;
@@ -24,8 +24,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.parker.rlp.models.Role.Roles.ROLE_ADMIN;
-import static com.parker.rlp.models.Role.Roles.ROLE_USER;
+import static com.parker.rlp.models.users.Role.Roles.ROLE_ADMIN;
+import static com.parker.rlp.models.users.Role.Roles.ROLE_USER;
 
 @SpringBootApplication
 public class RlpApplication {

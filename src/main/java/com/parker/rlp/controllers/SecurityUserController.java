@@ -1,8 +1,7 @@
 package com.parker.rlp.controllers;
 
-import com.parker.rlp.exceptions.DuplicateUserException;
-import com.parker.rlp.models.SecurityUser;
-import com.parker.rlp.models.User;
+import com.parker.rlp.exceptions.user.DuplicateUserException;
+import com.parker.rlp.models.users.User;
 import com.parker.rlp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,17 +24,13 @@ public class SecurityUserController {
     }
 
     @PostMapping("/register")
-    public String registerAccount(@Valid @ModelAttribute(name="user") User user, Errors errors, Model model) {
+    public String registerAccount(@Valid @ModelAttribute(name="user") User user, Errors errors, Model model)
+            throws DuplicateUserException {
         if (errors.hasErrors()) {
             return "register";
         }
-        try {
-            userService.registerAccount(user);
-            return "register-success";
-        } catch (DuplicateUserException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error-page";
-        }
+        userService.registerAccount(user);
+        return "register-success";
     }
 
     @GetMapping("/login-error")

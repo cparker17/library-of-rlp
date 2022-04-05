@@ -1,4 +1,4 @@
-package com.parker.rlp.models;
+package com.parker.rlp.models.users;
 
 import com.parker.rlp.models.books.Book;
 import com.sun.istack.NotNull;

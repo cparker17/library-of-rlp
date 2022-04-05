@@ -1,6 +1,6 @@
 package com.parker.rlp.services.impl;
 
-import com.parker.rlp.exceptions.NoSuchBookCaseException;
+import com.parker.rlp.exceptions.book.NoSuchBookCaseException;
 import com.parker.rlp.models.books.Book;
 import com.parker.rlp.models.books.BookCase;
 import com.parker.rlp.models.books.BookShelf;

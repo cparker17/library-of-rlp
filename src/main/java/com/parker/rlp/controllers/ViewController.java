@@ -1,10 +1,10 @@
 package com.parker.rlp.controllers;
 
-import com.parker.rlp.exceptions.NoSuchBookException;
-import com.parker.rlp.exceptions.NoSuchUserException;
-import com.parker.rlp.models.SecurityUser;
-import com.parker.rlp.models.User;
-import com.parker.rlp.models.UserFactory;
+import com.parker.rlp.exceptions.book.NoSuchBookException;
+import com.parker.rlp.exceptions.user.NoSuchUserException;
+import com.parker.rlp.models.users.SecurityUser;
+import com.parker.rlp.models.users.User;
+import com.parker.rlp.models.users.UserFactory;
 import com.parker.rlp.models.books.Book;
 import com.parker.rlp.services.BookService;
 import com.parker.rlp.services.SecurityUserService;
@@ -56,15 +56,10 @@ public class ViewController {
     }
 
     @RequestMapping("/books/edit/{id}")
-    public String viewEditBookPage(Model model, @PathVariable(name = "id") Long id) {
-        try {
-            Book book = bookService.getBookByBookId(id);
-            model.addAttribute("book", book);
-            return "edit-book";
-        } catch (NoSuchBookException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error-page";
-        }
+    public String viewEditBookPage(Model model, @PathVariable(name = "id") Long id) throws NoSuchBookException {
+        Book book = bookService.getBookByBookId(id);
+        model.addAttribute("book", book);
+        return "edit-book";
     }
 
     @GetMapping("/sign-in")

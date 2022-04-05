@@ -1,7 +1,7 @@
 package com.parker.rlp.services.impl;
 
-import com.parker.rlp.models.RentalHistory;
-import com.parker.rlp.models.User;
+import com.parker.rlp.models.users.RentalHistory;
+import com.parker.rlp.models.users.User;
 import com.parker.rlp.models.books.Book;
 import com.parker.rlp.repositories.RentalHistoryRepository;
 import com.parker.rlp.services.RentalHistoryService;

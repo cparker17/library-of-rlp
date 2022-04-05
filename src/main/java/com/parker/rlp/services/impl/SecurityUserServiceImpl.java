@@ -1,6 +1,6 @@
 package com.parker.rlp.services.impl;
 
-import com.parker.rlp.models.SecurityUser;
+import com.parker.rlp.models.users.SecurityUser;
 import com.parker.rlp.repositories.UserRepository;
 import com.parker.rlp.services.SecurityUserService;
 import org.springframework.beans.factory.annotation.Autowired;

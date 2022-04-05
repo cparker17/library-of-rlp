@@ -1,4 +1,4 @@
-package com.parker.rlp.models;
+package com.parker.rlp.models.users;
 
 import lombok.*;
 
@@ -14,12 +14,13 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookHistory {
+public class RentalHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String username;
+    private Long bookId;
+    private String title;
     private LocalDate dateRented;
     private LocalDate dateReturned;
 }

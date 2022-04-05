@@ -1,7 +1,6 @@
 package com.parker.rlp.models.books;
 
-import com.parker.rlp.models.BookHistory;
-import com.parker.rlp.models.User;
+import com.parker.rlp.models.users.User;
 import com.sun.istack.NotNull;
 import lombok.*;
 import javax.persistence.*;

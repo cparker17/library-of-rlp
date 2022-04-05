@@ -1,8 +1,8 @@
 package com.parker.rlp.services.impl;
 
-import com.parker.rlp.exceptions.DuplicateBookException;
-import com.parker.rlp.exceptions.NoSuchBookCaseException;
-import com.parker.rlp.exceptions.NoSuchBookException;
+import com.parker.rlp.exceptions.book.DuplicateBookException;
+import com.parker.rlp.exceptions.book.NoSuchBookCaseException;
+import com.parker.rlp.exceptions.book.NoSuchBookException;
 import com.parker.rlp.models.books.Book;
 import com.parker.rlp.repositories.BookHistoryRepository;
 import com.parker.rlp.repositories.BookRepository;

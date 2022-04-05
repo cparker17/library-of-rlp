@@ -1,6 +1,6 @@
 package com.parker.rlp.services.impl;
 
-import com.parker.rlp.models.User;
+import com.parker.rlp.models.users.User;
 import com.parker.rlp.repositories.AddressRepository;
 import com.parker.rlp.services.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;

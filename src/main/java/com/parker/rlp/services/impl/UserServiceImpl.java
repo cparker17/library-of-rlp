@@ -1,13 +1,12 @@
 package com.parker.rlp.services.impl;
 
-import com.parker.rlp.exceptions.DuplicateUserException;
-import com.parker.rlp.exceptions.NoRentalHistoryException;
-import com.parker.rlp.exceptions.NoSuchUserException;
-import com.parker.rlp.models.Address;
+import com.parker.rlp.exceptions.user.DuplicateUserException;
+import com.parker.rlp.exceptions.user.NoRentalHistoryException;
+import com.parker.rlp.exceptions.user.NoSuchUserException;
 import com.parker.rlp.models.books.Book;
-import com.parker.rlp.models.RentalHistory;
-import com.parker.rlp.models.Role;
-import com.parker.rlp.models.User;
+import com.parker.rlp.models.users.RentalHistory;
+import com.parker.rlp.models.users.Role;
+import com.parker.rlp.models.users.User;
 import com.parker.rlp.repositories.*;
 import com.parker.rlp.services.AddressService;
 import com.parker.rlp.services.RentalHistoryService;

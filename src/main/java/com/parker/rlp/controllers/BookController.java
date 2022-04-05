@@ -1,10 +1,10 @@
 package com.parker.rlp.controllers;
 
-import com.parker.rlp.exceptions.NoSuchBookCaseException;
-import com.parker.rlp.exceptions.NoSuchBookException;
+import com.parker.rlp.exceptions.book.NoSuchBookCaseException;
+import com.parker.rlp.exceptions.book.NoSuchBookException;
 import com.parker.rlp.models.books.Book;
-import com.parker.rlp.models.User;
-import com.parker.rlp.models.UserFactory;
+import com.parker.rlp.models.users.User;
+import com.parker.rlp.models.users.UserFactory;
 import com.parker.rlp.services.BookService;
 import com.parker.rlp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +23,15 @@ public class BookController {
     UserService userService;
 
     @GetMapping("/new-arrivals")
-    public String viewNewArrivals(Model model) {
-        try {
-            model.addAttribute("books", bookService.getNewArrivals());
-            return "new-arrivals";
-        } catch (NoSuchBookException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error-page";
-        }
+    public String viewNewArrivals(Model model) throws NoSuchBookException {
+        model.addAttribute("books", bookService.getNewArrivals());
+        return "new-arrivals";
     }
 
     @RequestMapping("/available")
-    public String viewAvailableBooks(Model model) {
-        try {
-            model.addAttribute("availableBooksList", bookService.getAvailableBooks());
-            return "book-index";
-        } catch (NoSuchBookException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error-page";
-        }
+    public String viewAvailableBooks(Model model) throws NoSuchBookException {
+        model.addAttribute("availableBooksList", bookService.getAvailableBooks());
+        return "book-index";
     }
 
     @RequestMapping("/update/{id}")
@@ -51,14 +41,10 @@ public class BookController {
     }
 
     @RequestMapping("/delete/{id}")
-    public String deleteBook(Model model, @PathVariable(name = "id") Long id) {
-        try {
-            bookService.deleteBook(id);
-            return "redirect:/books";
-        } catch (NoSuchBookException | NoSuchBookCaseException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error-page";
-        }
+    public String deleteBook(Model model, @PathVariable(name = "id") Long id)
+            throws NoSuchBookException, NoSuchBookCaseException {
+        bookService.deleteBook(id);
+        return "redirect:/books";
     }
 
     @RequestMapping("/checkout/{bookId}")
@@ -82,24 +68,16 @@ public class BookController {
     }
 
     @GetMapping("/cover-image/{bookId}")
-    public String viewBookCoverImage(@PathVariable(name = "bookId") Long bookId, Model model) {
-        try {
-            model.addAttribute("book", bookService.getBookByBookId(bookId));
-            return "cover-image";
-        } catch (NoSuchBookException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error-page";
-        }
+    public String viewBookCoverImage(@PathVariable(name = "bookId") Long bookId, Model model)
+            throws NoSuchBookException {
+        model.addAttribute("book", bookService.getBookByBookId(bookId));
+        return "cover-image";
     }
 
     @RequestMapping("/books/search")
-    public String displaySearchResults(Model model, @RequestParam(value="searchText") String searchText) {
-        try {
-            model.addAttribute("books", bookService.getSearchResults(searchText));
-            return "search-results";
-        } catch (NoSuchBookException e) {
-            model.addAttribute("message", e.getMessage());
-            return "error-page";
-        }
+    public String displaySearchResults(Model model, @RequestParam(value="searchText") String searchText)
+            throws NoSuchBookException {
+        model.addAttribute("books", bookService.getSearchResults(searchText));
+        return "search-results";
     }
 }

@@ -1,5 +1,7 @@
-package com.parker.rlp.models;
+package com.parker.rlp.models.users;
 
+import com.parker.rlp.models.users.SecurityUser;
+import com.parker.rlp.models.users.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
