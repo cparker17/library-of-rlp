@@ -5,6 +5,7 @@ import com.parker.rlp.models.books.Book;
 import com.parker.rlp.models.books.BookCase;
 import com.parker.rlp.models.books.BookShelf;
 import com.parker.rlp.repositories.BookCaseRepository;
+import com.parker.rlp.repositories.BookRepository;
 import com.parker.rlp.repositories.BookShelfRepository;
 import com.parker.rlp.services.BookCaseService;
 import com.parker.rlp.services.BookShelfService;
@@ -23,6 +24,9 @@ public class BookShelfServiceImpl implements BookShelfService {
 
     @Autowired
     BookCaseRepository bookCaseRepository;
+
+    @Autowired
+    BookRepository bookRepository;
 
     public List<BookShelf> getShelvesWithTargetSubject(Book newBook) {
         List<BookShelf> bookShelvesWithSubject = new ArrayList<>();
@@ -100,6 +104,19 @@ public class BookShelfServiceImpl implements BookShelfService {
         }
         Collections.reverse(shiftDirections);
         return shiftDirections;
+    }
+
+    @Override
+    public void removeBookFromShelf(Long id) {
+        for (BookShelf bookShelf : bookShelfRepository.findAll()) {
+            for (Book book : bookShelf.getBooks()) {
+                if (Objects.equals(book.getId(), id)) {
+                    bookShelf.getBooks().remove(book);
+                    bookShelf.updateOpenSpaceWidth((book.getThickness() * -1));
+                    return;
+                }
+            }
+        }
     }
 
     private void removeBooksToBeShifted(BookShelf bookShelf, List<Book> booksToBeShifted) {

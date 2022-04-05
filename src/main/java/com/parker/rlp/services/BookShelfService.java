@@ -14,4 +14,5 @@ public interface BookShelfService {
     BookShelf getTargetBookShelf(List<BookShelf> bookShelvesWithSubject, Book book);
     void addBookToBottomShelf(Book book, BookCase bookCase) throws NoSuchBookCaseException;
     List<String> addBook(Book book, BookShelf targetBookShelf, BookCase bookCase) throws NoSuchBookCaseException;
+    void removeBookFromShelf(Long id);
 }

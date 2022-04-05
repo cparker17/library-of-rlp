@@ -6,6 +6,7 @@ import com.parker.rlp.models.books.Book;
 import com.parker.rlp.models.users.User;
 import com.parker.rlp.models.users.UserFactory;
 import com.parker.rlp.services.BookService;
+import com.parker.rlp.services.BookShelfService;
 import com.parker.rlp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/books")
 public class BookController {
+    @Autowired
+    BookShelfService bookShelfService;
+
     @Autowired
     BookService bookService;
 
@@ -43,6 +47,7 @@ public class BookController {
     @RequestMapping("/delete/{id}")
     public String deleteBook(Model model, @PathVariable(name = "id") Long id)
             throws NoSuchBookException, NoSuchBookCaseException {
+        bookShelfService.removeBookFromShelf(id);
         bookService.deleteBook(id);
         return "redirect:/books";
     }
