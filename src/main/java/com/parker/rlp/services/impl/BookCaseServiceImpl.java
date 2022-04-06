@@ -72,7 +72,7 @@ public class BookCaseServiceImpl implements BookCaseService {
         List<BookCase> bookCases = bookCaseRepository.findAll();
         List<Book> allBooks = bookRepository.findAll();
 
-        allBooks.sort(Comparator.comparing(Book::getSubject, String.CASE_INSENSITIVE_ORDER)
+        allBooks.sort(Comparator.comparing((Book book) -> book.getSubject().getName())
                 .thenComparing(Book::getTitle, String.CASE_INSENSITIVE_ORDER));
 
         BookCase bookCase;
@@ -172,8 +172,7 @@ public class BookCaseServiceImpl implements BookCaseService {
                     if (book.getHeight() > bookCase.getMaxBookHeight() || book.getDepth() > bookCase.getMaxBookDepth()) {
                         bookShelfService.addBookToBottomShelf(book, bookCase);
                     } else {
-                        List<String> shiftDirections = bookShelfService.addBook(book, targetBookShelf, bookCase);
-                        return shiftDirections;
+                        return bookShelfService.addBook(book, targetBookShelf, bookCase);
                     }
                 }
             }

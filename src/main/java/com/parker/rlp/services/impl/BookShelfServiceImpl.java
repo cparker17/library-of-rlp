@@ -34,7 +34,7 @@ public class BookShelfServiceImpl implements BookShelfService {
         for (BookShelf bookShelf : bookShelfRepository.findAll()) {
             if (!bookShelf.isBottomShelf()) {
                 for (Book book : bookShelf.getBooks()) {
-                    if (book.getSubject().equals(newBook.getSubject())) {
+                    if (book.getSubject().getName().equals(newBook.getSubject().getName())) {
                         bookShelvesWithSubject.add(bookShelf);
                         break;
                     }
@@ -234,7 +234,7 @@ public class BookShelfServiceImpl implements BookShelfService {
     }
 
     private void getBookPositionAndSetLocation(Book newBook, BookShelf bookShelf, BookCase bookCase) {
-        bookShelf.getBooks().sort(Comparator.comparing(Book::getSubject, String.CASE_INSENSITIVE_ORDER)
+        bookShelf.getBooks().sort(Comparator.comparing((Book book) -> book.getSubject().getName())
                 .thenComparing(Book::getTitle, String.CASE_INSENSITIVE_ORDER));
         bookShelfRepository.save(bookShelf);
 

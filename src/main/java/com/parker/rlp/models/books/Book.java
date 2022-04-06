@@ -3,6 +3,8 @@ package com.parker.rlp.models.books;
 import com.parker.rlp.models.users.User;
 import com.sun.istack.NotNull;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
@@ -25,9 +27,9 @@ public class Book {
     @NotBlank(message = "Title required.")
     private String title;
 
-    @NotNull
-    @NotBlank(message = "Subject required.")
-    private String subject;
+    @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    private Subject subject;
 
     @NotNull
     @NotBlank(message = "Author required.")

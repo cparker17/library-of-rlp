@@ -6,6 +6,7 @@ import com.parker.rlp.exceptions.book.NoSuchBookException;
 import com.parker.rlp.models.books.Book;
 import com.parker.rlp.repositories.BookHistoryRepository;
 import com.parker.rlp.repositories.BookRepository;
+import com.parker.rlp.repositories.SubjectRepository;
 import com.parker.rlp.repositories.UserRepository;
 import com.parker.rlp.services.BookCaseService;
 import com.parker.rlp.services.BookHistoryService;
@@ -39,12 +40,16 @@ public class BookServiceImpl implements BookService {
     @Autowired
     BookHistoryRepository bookHistoryRepository;
 
+    @Autowired
+    SubjectRepository subjectRepository;
+
     @Override
     public Book saveBook(Book book) throws DuplicateBookException {
         if (bookRepository.findDistinctByIsbn(book.getIsbn()) != null) {
             throw new DuplicateBookException("This book already exists in our system.");
         }
         book.setDateAdded(LocalDate.now());
+        book.setSubject(subjectRepository.findByName(book.getSubject().getName()));
         return bookRepository.save(book);
 
     }

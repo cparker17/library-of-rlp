@@ -6,8 +6,10 @@ import com.parker.rlp.models.users.SecurityUser;
 import com.parker.rlp.models.users.User;
 import com.parker.rlp.models.users.UserFactory;
 import com.parker.rlp.models.books.Book;
+import com.parker.rlp.repositories.SubjectRepository;
 import com.parker.rlp.services.BookService;
 import com.parker.rlp.services.SecurityUserService;
+import com.parker.rlp.services.SubjectService;
 import com.parker.rlp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -27,6 +29,9 @@ public class ViewController {
 
     @Autowired
     BookService bookService;
+
+    @Autowired
+    SubjectService subjectService;
 
     @GetMapping("/")
     public String viewHomePage(Model model) {
@@ -57,8 +62,7 @@ public class ViewController {
 
     @RequestMapping("/books/edit/{id}")
     public String viewEditBookPage(Model model, @PathVariable(name = "id") Long id) throws NoSuchBookException {
-        Book book = bookService.getBookByBookId(id);
-        model.addAttribute("book", book);
+        model.addAttribute("book", bookService.getBookByBookId(id));
         return "edit-book";
     }
 
@@ -70,8 +74,8 @@ public class ViewController {
 
     @GetMapping("/books/new")
     public String viewNewBookPage(Model model) {
-        Book book = new Book();
-        model.addAttribute("book", book);
+        model.addAttribute("subjects", subjectService.getAllSubjects());
+        model.addAttribute("book", new Book());
         return "new-book";
     }
 

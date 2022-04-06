@@ -9,19 +9,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-<div th:replace="fragments :: navigation"/><br>
+<div th:replace="fragments :: navigation"/>
+<br>
 <div align="center">
     <h3>Enter New Book Information</h3>
     <br>
     <form action="#" th:action="@{/books/save}" th:object="${book}" method="post">
         <table border="0" cellpadding="10">
-            <tr>
-                <td>Subject:</td>
-                <td><input type="text" th:field="*{subject}"/>
-                    <span class="validationError text-danger" th:if="${#fields.hasErrors('subject')}"
-                          th:errors="*{subject}">Subject Error</span>
-                </td>
-            </tr>
             <tr>
                 <td>Title:</td>
                 <td><input type="text" th:field="*{title}"/>
@@ -64,10 +58,35 @@
                           th:errors="*{thickness}">Height Error</span>
                 </td>
             </tr>
+            <!--            <tr>-->
+            <!--                <td>Subject:</td>-->
+            <!--                <td><input type="text" th:field="*{subject.name}"/>-->
+            <!--                    <span class="validationError text-danger" th:if="${#fields.hasErrors('subject')}"-->
+            <!--                          th:errors="*{subject}">Subject Error</span>-->
+            <!--                </td>-->
+            <!--            </tr>-->
             <tr>
-                <td colspan="2"><button type="submit" class="btn btn-light text-dark border-dark">Save</button> </td>
+                <td>Subject:</td>
+                <td>
+                    <div class="col-lg-10" th:object="${book.subject}">
+                        <select class="form-control" th:field="*{name}">
+                            <option value="">SELECT SUBJECT</option>
+                            <option th:each="subject : ${subjects}"
+                                    th:value="${subject.name}"
+                                    th:text="${subject.id} + ' : ' + ${subject.name}"></option>
+                        </select>
+                    </div>
+                </td>
             </tr>
-        </table>
+            <tr>
+
+            </tr>
+        </table><br><br>
+        <center>
+            <td colspan="2">
+                <button type="submit" class="btn btn-light text-dark border-dark">Save</button>
+            </td>
+        </center>
     </form>
 </div>
 </body>
