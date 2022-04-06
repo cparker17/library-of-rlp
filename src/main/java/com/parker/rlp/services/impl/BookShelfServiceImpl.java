@@ -45,6 +45,16 @@ public class BookShelfServiceImpl implements BookShelfService {
     }
 
     public BookShelf getTargetBookShelf(List<BookShelf> bookShelvesWithSubject, Book newBook) {
+        if (bookShelvesWithSubject.isEmpty()) {
+            for (BookShelf bookShelf : bookShelfRepository.findAll()) {
+                for (Book book : bookShelf.getBooks()) {
+                    if (newBook.getSubject().getName().compareToIgnoreCase(book.getSubject().getName()) < 0) {
+                        return bookShelf;
+                    }
+                }
+            }
+        }
+
         for (BookShelf bookShelf : bookShelvesWithSubject) {
             List<Book> books = bookShelf.getBooks();
             for (Book book : books) {
@@ -59,6 +69,7 @@ public class BookShelfServiceImpl implements BookShelfService {
                 }
             }
         }
+
         return bookShelvesWithSubject.get(bookShelvesWithSubject.size() - 1);
     }
 

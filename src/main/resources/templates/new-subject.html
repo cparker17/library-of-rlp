@@ -11,7 +11,7 @@
 <body>
 <div th:replace="fragments :: navigation"/>
 <br>
-<div align="center">
+<div align="center" th:object="${book}">
     <h3>Enter New Subject</h3>
     <br>
     <form action="#" th:action="@{/subject}" th:object="${subject}" method="post">

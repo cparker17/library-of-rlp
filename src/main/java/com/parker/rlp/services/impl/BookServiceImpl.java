@@ -147,8 +147,7 @@ public class BookServiceImpl implements BookService {
                             .collect(Collectors.toList());
     }
 
-    @Override
-    public List<Book> searchBooksForSubject(String searchText) {
+    private List<Book> searchBooksForSubject(String searchText) {
         List<Book> booksWithSubject = new ArrayList<>();
         for (Book book : bookRepository.findAll()) {
             System.out.println(book.getSubject().getName());

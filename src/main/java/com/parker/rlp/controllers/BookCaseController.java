@@ -4,6 +4,7 @@ import com.parker.rlp.exceptions.book.DuplicateBookException;
 import com.parker.rlp.exceptions.book.NoSuchBookCaseException;
 import com.parker.rlp.models.books.Book;
 import com.parker.rlp.models.books.BookCase;
+import com.parker.rlp.models.books.Subject;
 import com.parker.rlp.services.BookCaseService;
 import com.parker.rlp.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
