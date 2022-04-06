@@ -3,7 +3,9 @@ package com.parker.rlp.services.impl;
 import com.parker.rlp.exceptions.book.DuplicateBookException;
 import com.parker.rlp.exceptions.book.NoSuchBookCaseException;
 import com.parker.rlp.exceptions.book.NoSuchBookException;
+import com.parker.rlp.exceptions.user.NoSuchUserException;
 import com.parker.rlp.models.books.Book;
+import com.parker.rlp.models.users.User;
 import com.parker.rlp.repositories.BookHistoryRepository;
 import com.parker.rlp.repositories.BookRepository;
 import com.parker.rlp.repositories.SubjectRepository;
@@ -91,11 +93,18 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book checkoutBook(Long bookId, Long userId) {
+    public Book checkoutBook(Long bookId, Long userId) throws NoSuchUserException {
         Book book = bookRepository.getById(bookId);
         book.setDateRented(LocalDate.now());
-        book.setUser(userRepository.findById(userId).get());
-        return bookRepository.save(book);
+        book.setDateDue(LocalDate.now().plusDays(7));
+        book.setIsCheckedOut(true);
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            book.setUser(userOptional.get());
+            return bookRepository.save(book);
+        } else {
+            throw new NoSuchUserException("A customer with that id does not exist.");
+        }
     }
 
     @Override
@@ -109,6 +118,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book returnBook(Long id) {
         Book book = bookRepository.getById(id);
+        book.setIsCheckedOut(false);
         bookHistoryService.updateBookRentalHistory(book);
         book.setUser(null);
         return bookRepository.save(book);
@@ -163,6 +173,13 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findTopByOrderByDateAddedDesc();
     }
 
-
+    @Override
+    public List<Book> getAllRentedBooks() {
+        List<Book> rentedBooks = bookRepository.findAll();
+        rentedBooks.removeIf(book -> !book.getIsCheckedOut());
+        rentedBooks.sort(Comparator.comparing((Book book) -> book.getSubject().getName())
+                .thenComparing(Book::getTitle, String.CASE_INSENSITIVE_ORDER));
+        return rentedBooks;
+    }
 }
 

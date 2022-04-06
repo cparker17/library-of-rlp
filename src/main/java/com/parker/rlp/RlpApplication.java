@@ -123,6 +123,7 @@ public class RlpApplication {
                                 .thickness(Double.valueOf(rowData.get(6)))
                                 .imageFile(rowData.get(7))
                                 .dateAdded(LocalDate.now())
+                                .isCheckedOut(false)
                                 .build();
                         booksToPersist.add(book);
 

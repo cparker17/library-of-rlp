@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
-    <title>Book Location</title>
+    <title>Restock Directions</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
           rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
           crossorigin="anonymous">
@@ -13,14 +13,12 @@
 <div th:replace="fragments :: navigation"/>
 <br>
 <center>
-    <h1>New Book Location</h1><br>
+    <h1>Restock Location</h1><br>
     <div th:object="${book}">
         <p th:text="'     Book Case No: ' + ${book.bookCaseNumber}">Book Case No</p>
         <p th:text="'     Book Shelf No: ' + ${book.bookShelfNumber}">Book Shelf No</p>
         <p th:text="'     Position No: ' + ${book.bookNumber}">Book Position No</p>
     </div>
-    <br><br>
-        <p th:each="shiftDirection : ${shiftDirections}" th:text="${shiftDirection}">Shift Direction</p>
 </center>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.parker.rlp.controllers;
 
 import com.parker.rlp.exceptions.book.NoSuchBookCaseException;
 import com.parker.rlp.exceptions.book.NoSuchBookException;
+import com.parker.rlp.exceptions.user.NoSuchUserException;
 import com.parker.rlp.models.books.Book;
 import com.parker.rlp.models.users.User;
 import com.parker.rlp.models.users.UserFactory;
@@ -38,6 +39,12 @@ public class BookController {
         return "book-index";
     }
 
+    @RequestMapping("/rented-books")
+    public String viewRentedBooks(Model model) {
+        model.addAttribute("rentedBooks", bookService.getAllRentedBooks());
+        return "rented-books";
+    }
+
     @RequestMapping("/update/{id}")
     public String updateBook(@ModelAttribute(name="book") Book book) {
         bookService.updateBook(book);
@@ -54,7 +61,7 @@ public class BookController {
 
     @RequestMapping("/checkout/{bookId}")
     public String checkoutBook(@PathVariable(name = "bookId") Long bookId,
-                               Authentication auth, Model model) {
+                               Authentication auth, Model model) throws NoSuchUserException {
         User user = UserFactory.createUser(auth);
         Book book = bookService.checkoutBook(bookId, user.getId());
         userService.checkoutBook(book, user);
@@ -64,12 +71,12 @@ public class BookController {
 
     @RequestMapping("/return/{bookId}")
     public String returnBook(@PathVariable(name = "bookId") Long bookId,
-                             Authentication auth, Model model) {
+                             Authentication auth, Model model) throws NoSuchBookException {
         bookService.returnBook(bookId);
         User user = UserFactory.createUser(auth);
         userService.returnBook(bookId, user);
-        model.addAttribute("user", user);
-        return "redirect:/dashboard";
+        model.addAttribute("book", bookService.getBookByBookId(bookId));
+        return "restock-directions";
     }
 
     @GetMapping("/cover-image/{bookId}")

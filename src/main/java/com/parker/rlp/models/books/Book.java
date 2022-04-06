@@ -46,10 +46,13 @@ public class Book {
     private String imageFile;
     private LocalDate dateAdded;
     private LocalDate dateRented;
+    private LocalDate dateDue;
     private LocalDate dateReturned;
     private Long bookCaseNumber;
     private Integer bookShelfNumber;
     private Integer bookNumber;
+
+    private Boolean isCheckedOut;
 
     @ManyToOne
     private User user;
