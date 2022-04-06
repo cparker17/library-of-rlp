@@ -29,6 +29,7 @@
                 <th>Date Added</th>
                 <span th:if="${book.dateRented != null}">
                 <th>Date Rented</th>
+                    <th>Date Due</th>
                 </span>
                 <div sec:authorize="hasRole('ROLE_USER')">
                     <th>Actions</th>
@@ -43,8 +44,9 @@
                 <td th:text="${book.author}">Author</td>
                 <td th:text="${book.isbn}">ISBN</td>
                 <td th:text="${book.dateAdded}">Date Added</td>
+                <td th:text="${book.dateDue}">Date Due</td>
                 <td th:unless="${book.dateRented == null}"  th:text="${book.dateRented}">Date Rented</td>
-                <td><a th:if="${book.dateRented != null}"
+                <td><a th:if="${book.dateDue == null}"
                        sec:authorize="hasRole('ROLE_USER')"
                        th:href="@{'/books/checkout/' + ${book.id}}"
                        class="btn btn-dark text-dark bg-light btn-sm">Rent Book</a></td>

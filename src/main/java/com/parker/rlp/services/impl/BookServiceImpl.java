@@ -119,6 +119,7 @@ public class BookServiceImpl implements BookService {
     public Book returnBook(Long id) {
         Book book = bookRepository.getById(id);
         book.setIsCheckedOut(false);
+        book.setDateDue(null);
         bookHistoryService.updateBookRentalHistory(book);
         book.setUser(null);
         return bookRepository.save(book);
