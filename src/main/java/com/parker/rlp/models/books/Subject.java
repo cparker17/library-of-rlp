@@ -16,7 +16,6 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @NotBlank(message = "Subject name required.")
     String name;
 
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -40,22 +40,11 @@ public class Book {
 
     @NotNull
     @NotBlank(message = "ISBN required.")
-    @Column(unique = true)
     private String isbn;
 
-    @NotEmpty(message = "Height required.")
-    @Min(25L)
-    @Max(400L)
+
     private Double height;
-    
-    @NotEmpty(message = "Depth required.")
-    @Min(25L)
-    @Max(400L)
     private Double depth;
-    
-    @NotEmpty(message = "Thickness required.")
-    @Min(5L)
-    @Max(150L)
     private Double thickness;
 
     private String imageFile;

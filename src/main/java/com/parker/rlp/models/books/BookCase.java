@@ -27,29 +27,10 @@ public class BookCase {
     @ManyToOne
     private BookShelf bottomShelf;
 
-    @NotEmpty(message = "Bookcase width required.")
-    @Min(25L)
-    @Max(1000L)
     private Double bookCaseWidth;
-
-    @NotEmpty(message = "Maximum book height required.")
-    @Min(100L)
-    @Max(400L)
     private Double maxBookHeight;
-
-    @NotEmpty(message = "Maximum book depth required.")
-    @Min(100L)
-    @Max(400L)
     private Double maxBookDepth;
-
-    @NotEmpty(message = "Number of upper shelves required.")
-    @Min(0L)
-    @Max(10L)
     private Integer numberOfUpperShelves;
-
-    @NotEmpty(message = "Available space % required.")
-    @Min(0L)
-    @Max(100L)
     private Double availableSpace;
 
     private boolean hasBottomShelf;
