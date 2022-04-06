@@ -14,10 +14,10 @@ import com.parker.rlp.services.BookService;
 import com.parker.rlp.services.RentalHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -129,21 +129,41 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public List<Book> getSearchResults(String searchText) throws NoSuchBookException {
-        List<Book> searchResults = new ArrayList<>();
-        searchResults.addAll(bookRepository.findBooksBySubjectContaining(searchText));
+        List<Book> searchResults = searchBooksForSubject(searchText);
         searchResults.addAll(bookRepository.findBooksByTitleContaining(searchText));
         searchResults.addAll(bookRepository.findBooksByAuthorContaining(searchText));
         searchResults.addAll(bookRepository.findBooksByIsbnContaining(searchText));
         if (searchResults.isEmpty()) {
             throw new NoSuchBookException("We don't have any books for that search.");
         }
-        return searchResults.stream().distinct().collect(Collectors.toList());
+
+        return searchResults.stream()
+                            .distinct()
+                            .sorted(Comparator.comparing(Book::getBookCaseNumber)
+                            .thenComparing(Book::getBookShelfNumber)
+                            .thenComparing(Book ::getBookNumber))
+                            .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Book> searchBooksForSubject(String searchText) {
+        List<Book> booksWithSubject = new ArrayList<>();
+        for (Book book : bookRepository.findAll()) {
+            System.out.println(book.getSubject().getName());
+            if (book.getSubject().getName().toLowerCase().contains(searchText.toLowerCase())) {
+                booksWithSubject.add(book);
+            }
+        }
+        return booksWithSubject;
     }
 
     @Override
     public Book getLatestArrival() {
         return bookRepository.findTopByOrderByDateAddedDesc();
     }
+
+
 }
 

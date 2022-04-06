@@ -23,4 +23,5 @@ public interface BookService {
     List<Book> getNewArrivals() throws NoSuchBookException;
     List<Book> getSearchResults(String searchText) throws NoSuchBookException;
     Book getLatestArrival();
+    List<Book> searchBooksForSubject(String searchText);
 }

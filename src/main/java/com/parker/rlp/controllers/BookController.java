@@ -79,7 +79,7 @@ public class BookController {
         return "cover-image";
     }
 
-    @RequestMapping("/books/search")
+    @RequestMapping("/search")
     public String displaySearchResults(Model model, @RequestParam(value="searchText") String searchText)
             throws NoSuchBookException {
         model.addAttribute("books", bookService.getSearchResults(searchText));
