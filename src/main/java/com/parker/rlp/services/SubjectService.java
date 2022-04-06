@@ -8,4 +8,5 @@ import java.util.List;
 @Service
 public interface SubjectService {
     List<Subject> getAllSubjects();
+    void addSubject(Subject subject);
 }

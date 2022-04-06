@@ -2,6 +2,7 @@ package com.parker.rlp.controllers;
 
 import com.parker.rlp.exceptions.book.NoSuchBookException;
 import com.parker.rlp.exceptions.user.NoSuchUserException;
+import com.parker.rlp.models.books.Subject;
 import com.parker.rlp.models.users.SecurityUser;
 import com.parker.rlp.models.users.User;
 import com.parker.rlp.models.users.UserFactory;
@@ -89,5 +90,11 @@ public class ViewController {
     public String viewUpdateUserPage(Authentication auth, Model model) {
         model.addAttribute("user", UserFactory.createUser(auth));
         return "update-user";
+    }
+
+    @RequestMapping("/subject-form")
+    public String viewAddNewSubjectPage(Model model) {
+        model.addAttribute("subject", new Subject());
+        return "new-subject";
     }
 }

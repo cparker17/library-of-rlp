@@ -73,7 +73,7 @@
                             <option value="">SELECT SUBJECT</option>
                             <option th:each="subject : ${subjects}"
                                     th:value="${subject.name}"
-                                    th:text="${subject.id} + ' : ' + ${subject.name}"></option>
+                                    th:text="${subject.name}"></option>
                         </select>
                     </div>
                 </td>
