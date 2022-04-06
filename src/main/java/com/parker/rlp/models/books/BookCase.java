@@ -3,7 +3,10 @@ package com.parker.rlp.models.books;
 import com.sun.istack.NotNull;
 import lombok.*;
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +27,32 @@ public class BookCase {
     @ManyToOne
     private BookShelf bottomShelf;
 
+    @NotEmpty(message = "Bookcase width required.")
+    @Min(25L)
+    @Max(1000L)
     private Double bookCaseWidth;
+
+    @NotEmpty(message = "Maximum book height required.")
+    @Min(100L)
+    @Max(400L)
     private Double maxBookHeight;
+
+    @NotEmpty(message = "Maximum book depth required.")
+    @Min(100L)
+    @Max(400L)
     private Double maxBookDepth;
-    private boolean hasBottomShelf;
+
+    @NotEmpty(message = "Number of upper shelves required.")
+    @Min(0L)
+    @Max(10L)
     private Integer numberOfUpperShelves;
+
+    @NotEmpty(message = "Available space % required.")
+    @Min(0L)
+    @Max(100L)
     private Double availableSpace;
+
+    private boolean hasBottomShelf;
 
     public void addShelfToBookCase (BookShelf bookShelf) {
         if (upperShelves == null) {

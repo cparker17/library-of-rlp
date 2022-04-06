@@ -6,7 +6,10 @@ import lombok.*;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +40,22 @@ public class Book {
 
     @NotNull
     @NotBlank(message = "ISBN required.")
+    @Column(unique = true)
     private String isbn;
 
+    @NotEmpty(message = "Height required.")
+    @Min(25L)
+    @Max(400L)
     private Double height;
+    
+    @NotEmpty(message = "Depth required.")
+    @Min(25L)
+    @Max(400L)
     private Double depth;
+    
+    @NotEmpty(message = "Thickness required.")
+    @Min(5L)
+    @Max(150L)
     private Double thickness;
 
     private String imageFile;
