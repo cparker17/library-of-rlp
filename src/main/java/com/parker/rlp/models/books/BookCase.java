@@ -21,10 +21,10 @@ public class BookCase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
+    @OneToMany
     private List<BookShelf> upperShelves;
 
-    @ManyToOne
+    @OneToOne
     private BookShelf bottomShelf;
 
     private Double bookCaseWidth;

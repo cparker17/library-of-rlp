@@ -18,7 +18,7 @@ public class BookShelf {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Book> books;
 
     private Long bookCaseNumber;
