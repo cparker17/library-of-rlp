@@ -38,23 +38,25 @@ public class BookCaseServiceImpl implements BookCaseService {
     public void addBookCase(BookCase bookCase) {
         List<BookShelf> shelvesToPersist = new ArrayList<>();
         for (int i = 0; i < bookCase.getNumberOfUpperShelves(); i++) {
-            BookShelf upperShelf = new BookShelf();
-            upperShelf.setShelfLocation(i + 1);
-            upperShelf.setShelfWidth(bookCase.getBookCaseWidth());
-            upperShelf.setOpenSpaceWidth(bookCase.getBookCaseWidth() * bookCase.getAvailableSpace() / 100);
-            upperShelf.setAvailableSpace(bookCase.getAvailableSpace());
-            shelvesToPersist.add(upperShelf);
+            BookShelf upperShelf = BookShelf.builder()
+                    .shelfLocation(i + 1)
+                    .shelfWidth(bookCase.getBookCaseWidth())
+                    .openSpaceWidth(bookCase.getBookCaseWidth() * bookCase.getAvailableSpace() / 100)
+                    .availableSpace(bookCase.getAvailableSpace())
+                    .build();
             bookCase.addShelfToBookCase(upperShelf);
+            shelvesToPersist.add(upperShelf);
         }
 
         if (bookCase.hasBottomShelf()) {
-            BookShelf bottomShelf = new BookShelf();
-            bottomShelf.setShelfLocation(bookCase.getNumberOfUpperShelves() + 1);
-            bottomShelf.setShelfWidth(bookCase.getBookCaseWidth());
-            bottomShelf.setOpenSpaceWidth(bookCase.getBookCaseWidth() * bookCase.getAvailableSpace() / 100);
-            bottomShelf.setAvailableSpace(bookCase.getAvailableSpace());
+            BookShelf bottomShelf = BookShelf.builder()
+                    .shelfLocation(bookCase.getNumberOfUpperShelves() + 1)
+                    .shelfWidth(bookCase.getBookCaseWidth())
+                    .openSpaceWidth(bookCase.getBookCaseWidth() * bookCase.getAvailableSpace() / 100)
+                    .availableSpace(bookCase.getAvailableSpace())
+                    .isBottomShelf(true)
+                    .build();
             bookCase.setBottomShelf(bottomShelf);
-            bottomShelf.setIsBottomShelf(true);
             shelvesToPersist.add(bottomShelf);
         }
 
@@ -144,11 +146,8 @@ public class BookCaseServiceImpl implements BookCaseService {
             bookShelf.addBookToBookShelf(book);
             setBookLocation(bookCount++, book, bookShelf, bookCase);
         }
-        setOpenSpaceWidthAfterLoading(shelvesToPersist);
-    }
 
-    private void setOpenSpaceWidthAfterLoading(List<BookShelf> bookShelves) {
-        bookShelves.forEach(shelf -> shelf.setOpenSpaceWidth(shelf.getOpenSpaceWidth() +
+        shelvesToPersist.forEach(shelf -> shelf.setOpenSpaceWidth(shelf.getOpenSpaceWidth() +
                 ((100 - shelf.getAvailableSpace()) / 100) * shelf.getShelfWidth()));
         bookShelfRepository.saveAll(bookShelves);
     }
