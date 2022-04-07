@@ -148,10 +148,8 @@ public class BookCaseServiceImpl implements BookCaseService {
     }
 
     private void setOpenSpaceWidthAfterLoading(List<BookShelf> bookShelves) {
-        for (BookShelf shelf : bookShelves) {
-            shelf.setOpenSpaceWidth(shelf.getOpenSpaceWidth() +
-                    ((100 - shelf.getAvailableSpace()) / 100) * shelf.getShelfWidth());
-        }
+        bookShelves.forEach(shelf -> shelf.setOpenSpaceWidth(shelf.getOpenSpaceWidth() +
+                ((100 - shelf.getAvailableSpace()) / 100) * shelf.getShelfWidth()));
         bookShelfRepository.saveAll(bookShelves);
     }
 

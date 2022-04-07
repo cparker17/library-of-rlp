@@ -132,9 +132,7 @@ public class BookShelfServiceImpl implements BookShelfService {
 
     private void removeBooksToBeShifted(BookShelf bookShelf, List<Book> booksToBeShifted) {
         bookShelf.getBooks().removeAll(booksToBeShifted);
-        for (Book bookToBeShifted : booksToBeShifted) {
-            bookShelf.updateOpenSpaceWidth((bookToBeShifted.getThickness() * -1));
-        }
+        booksToBeShifted.forEach(book -> bookShelf.updateOpenSpaceWidth((book.getThickness() * -1)));
     }
 
     private List<Book> getBooksToBeShiftedLeft(BookShelf bookShelf, double bookThickness) {
