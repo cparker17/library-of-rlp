@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.apache.poi.ss.usermodel.Row;
@@ -30,7 +31,7 @@ import static com.parker.rlp.models.users.Role.Roles.ROLE_ADMIN;
 import static com.parker.rlp.models.users.Role.Roles.ROLE_USER;
 
 @SpringBootApplication
-public class RlpApplication {
+public class RlpApplication extends SpringBootServletInitializer {
     @Autowired
     BookRepository bookRepository;
 
