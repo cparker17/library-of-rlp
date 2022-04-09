@@ -47,7 +47,6 @@ public class Book {
     private Double depth;
     private Double thickness;
 
-    private String imageFile;
     private LocalDate dateAdded;
     private LocalDate dateRented;
     private LocalDate dateDue;

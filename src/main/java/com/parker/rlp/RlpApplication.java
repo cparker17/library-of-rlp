@@ -122,12 +122,10 @@ public class RlpApplication extends SpringBootServletInitializer {
                                 .subject(subjectRepository.findByName(rowData.get(3)))
                                 .height(Double.valueOf(rowData.get(4))).depth(Double.valueOf(rowData.get(5)))
                                 .thickness(Double.valueOf(rowData.get(6)))
-                                .imageFile(rowData.get(7))
                                 .dateAdded(LocalDate.now())
                                 .isCheckedOut(false)
                                 .build();
                         booksToPersist.add(book);
-
                     }
                     bookRepository.saveAll(booksToPersist);
                     file.close();

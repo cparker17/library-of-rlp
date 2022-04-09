@@ -15,7 +15,7 @@
     <h2 th:text="${book.title}" class="text-center">Book Title</h2>
     <br/><br/>
     <div class="container">
-        <center><img th:src="'https://covers.openlibrary.org/b/isbn/' + ${book.isbn} + '-M.jpg'"/></center>
+        <center><img th:src="'https://covers.openlibrary.org/b/isbn/' + ${book.isbn} + '-L.jpg'"/></center>
         <table class="table table-striped border border-dark">
             <thead>
             <br><br>
@@ -51,7 +51,11 @@
                        class="btn btn-dark text-dark bg-light btn-sm">Rent Book</a></td>
             </tr>
             </tbody>
-        </table>
+        </table><br><br>
+        <center>
+        <p>Cover image provided courtesy of Open Library:</p>
+        <a href="https.//openlibrary.org">openlibrary.org</a>
+        </center>
     </div>
 </div>
 </body>
