@@ -40,10 +40,6 @@ public class BookShelf {
         openSpaceWidth -= bookThickness;
     }
 
-    public void setIsBottomShelf(boolean value) {
-        isBottomShelf = value;
-    }
-
     public boolean isBottomShelf() {
         return isBottomShelf;
     }

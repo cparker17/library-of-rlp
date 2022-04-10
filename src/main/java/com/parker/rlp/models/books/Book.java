@@ -4,12 +4,8 @@ import com.parker.rlp.models.users.User;
 import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +50,6 @@ public class Book {
     private Long bookCaseNumber;
     private Integer bookShelfNumber;
     private Integer bookNumber;
-
     private Boolean isCheckedOut;
 
     @ManyToOne
