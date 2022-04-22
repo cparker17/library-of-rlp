@@ -19,6 +19,7 @@ public class RentalHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long bookId;
     private String title;
     private LocalDate dateRented;
     private LocalDate dateReturned;

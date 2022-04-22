@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,6 +52,11 @@ public class RlpApplication extends SpringBootServletInitializer {
         SpringApplication.run(RlpApplication.class);
     }
 
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(RlpApplication.class);
+    }
+
     @Bean
     public CommandLineRunner loadInitialData() {
         return (args) -> {
@@ -81,8 +87,8 @@ public class RlpApplication extends SpringBootServletInitializer {
 
             if (subjectRepository.findAll().isEmpty()) {
                 try {
-                    FileInputStream file = new FileInputStream(new File("/Users/chrisparker/Documents/" +
-                            "rlp/src/main/resources/static/subjectData.xlsx"));
+                    FileInputStream file = new FileInputStream(new File(System.getProperty("user.dir") +
+                            "/src/main/resources/static/subjectData.xlsx"));
                     XSSFWorkbook workbook = new XSSFWorkbook(file);
                     XSSFSheet sheet = workbook.getSheetAt(0);
                     List<Subject> subjectsToPersist = new ArrayList<>();
@@ -104,8 +110,8 @@ public class RlpApplication extends SpringBootServletInitializer {
 
             if (bookRepository.findAll().isEmpty()) {
                 try {
-                    FileInputStream file = new FileInputStream(new File("/Users/chrisparker/Documents/" +
-                            "rlp/src/main/resources/static/bookData.xlsx"));
+                    FileInputStream file = new FileInputStream(new File(System.getProperty("user.dir") +
+                            "/src/main/resources/static/bookData.xlsx"));
                     XSSFWorkbook workbook = new XSSFWorkbook(file);
                     XSSFSheet sheet = workbook.getSheetAt(0);
                     List<Book> booksToPersist = new ArrayList<>();
